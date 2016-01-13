@@ -14,19 +14,19 @@ public class Bill {
     private String barCode;
     private String digitableLine;
     private HashMap<String, String> links;
-    private ArrayList<LineItem> itens;
+    private ArrayList<LineItem> items;
 
     public Bill(){
     }
 
-    public Bill(Summary summary, String state, String id, String barCode, String digitableLine, HashMap<String, String> links, ArrayList<LineItem> itens) {
+    public Bill(Summary summary, String state, String id, String barCode, String digitableLine, HashMap<String, String> links, ArrayList<LineItem> items) {
         this.summary = summary;
         this.state = state;
         this.id = id;
         this.barCode = barCode;
         this.digitableLine = digitableLine;
         this.links = links;
-        this.itens = itens;
+        this.items = items;
     }
 
     public Summary getSummary() {
@@ -77,11 +77,11 @@ public class Bill {
         this.links = links;
     }
 
-    public ArrayList<LineItem> getItens() {
-        return itens;
+    public ArrayList<LineItem> getItems() {
+        return items;
     }
 
-    public void setItens(ArrayList<LineItem> itens) {
-        this.itens = itens;
+    public void setItems(ArrayList<LineItem> items) {
+        this.items = items;
     }
 }
