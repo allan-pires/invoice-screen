@@ -20,6 +20,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Allan on 12/01/2016.
@@ -29,44 +30,6 @@ public class JSONHandler {
 
     static private JSONArray jsonArray = null;
 
-    // Get JSONArray from WebService
-    public static JSONArray getJSONArrayFromUrl(String s) {
-
-        // Consume REST API to get the JSON
-        try {
-            URL url = new URL(s);
-            URLConnection connection = url.openConnection();
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-
-            // Read lines from file
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-            reader.close();
-
-            // try parse the string to a JSON object
-            try {
-                jsonArray = new JSONArray(sb.toString());
-            }
-            catch (JSONException e) {
-                Log.e("JSON Parser", "Error parsing data " + e.toString());
-            }
-        }
-
-        catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return jsonArray;
-    }
-
     // Parses JSONObject -> Summary
     private static Summary parseJSONObjectToSummary(JSONObject summaryObject){
 
@@ -75,25 +38,43 @@ public class JSONHandler {
         try {
             // Summary - Date handling
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            java.sql.Date date = new java.sql.Date(format.parse(summaryObject.getString("close_date")).getTime());
-            summary.setCloseDate(date);
-            date = new java.sql.Date(format.parse(summaryObject.getString("due_date")).getTime());
-            summary.setDueDate(date);
-            date = new java.sql.Date(format.parse(summaryObject.getString("open_date")).getTime());
-            summary.setOpenDate(date);
+            java.sql.Date date;
 
-            // Summary - Get rest of the data from JSON
-            summary.setPastBalance(Integer.parseInt(summaryObject.getString("past_balance")));
-            summary.setTotalBalance(Integer.parseInt(summaryObject.getString("total_balance")));
-            summary.setTotalCumulative(Integer.parseInt(summaryObject.getString("total_cumulative")));
-            summary.setInterest(Integer.parseInt(summaryObject.getString("interest")));
-            summary.setPaid(Integer.parseInt(summaryObject.getString("paid")));
-            summary.setMinPayment(Integer.parseInt(summaryObject.getString("minimum_payment")));
+            // Get the data from JSON
+            if (summaryObject.has("close_date")){
+                date = new java.sql.Date(format.parse(summaryObject.getString("close_date")).getTime());
+                summary.setCloseDate(date);
+            }
+            if (summaryObject.has("due_date")){
+                date = new java.sql.Date(format.parse(summaryObject.optString("due_date")).getTime());
+                summary.setDueDate(date);
+            }
+            if (summaryObject.has("open_date")){
+                date = new java.sql.Date(format.parse(summaryObject.optString("open_date")).getTime());
+                summary.setOpenDate(date);
+            }
+            if (summaryObject.has("past_balance")){
+                summary.setPastBalance(summaryObject.getInt("past_balance"));
+            }
+            if (summaryObject.has("total_balance")){
+                summary.setTotalBalance(summaryObject.getInt("total_balance"));
+            }
+            if (summaryObject.has("total_cumulative")){
+                summary.setTotalCumulative(summaryObject.getInt("total_cumulative"));
+            }
+            if (summaryObject.has("interest")){
+                summary.setInterest(summaryObject.getInt("interest"));
+            }
+            if (summaryObject.has("paid")){
+                summary.setPaid(summaryObject.getInt("paid"));
+            }
+            if (summaryObject.has("minimum_payment")){
+                summary.setMinPayment(summaryObject.getInt("minimum_payment"));
+            }
         }
         catch (ParseException e) {
             e.printStackTrace();
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
@@ -114,15 +95,26 @@ public class JSONHandler {
                 LineItem temp = new LineItem();
 
                 // Get data from JSON and set temp variable
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                java.sql.Date date = new java.sql.Date(format.parse(lineItemObject.get("post_date").toString()).getTime());
-                temp.setPostDate(date);
-                temp.setAmount(Integer.parseInt(lineItemObject.get("amount").toString()));
-                temp.setTitle(lineItemObject.get("title").toString());
-                temp.setIndex(Integer.parseInt(lineItemObject.get("index").toString()));
-                temp.setCharges(Integer.parseInt(lineItemObject.get("charges").toString()));
-                temp.setHref(lineItemObject.get("href").toString());
-
+                if (lineItemObject.has("post_date")){
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                    java.sql.Date date = new java.sql.Date(format.parse(lineItemObject.get("post_date").toString()).getTime());
+                    temp.setPostDate(date);
+                }
+                if (lineItemObject.has("amount")) {
+                    temp.setAmount(lineItemObject.getInt("amount"));
+                }
+                if (lineItemObject.has("title")) {
+                    temp.setTitle(lineItemObject.get("title").toString());
+                }
+                if (lineItemObject.has("index")) {
+                    temp.setIndex(lineItemObject.getInt("index"));
+                }
+                if (lineItemObject.has("charges")) {
+                    temp.setCharges(lineItemObject.getInt("charges"));
+                }
+                if (lineItemObject.has("href")) {
+                    temp.setHref(lineItemObject.getString("href"));
+                }
                 // Adds temp variable to ArrayList
                 lineItems.add(temp);
             }
@@ -159,19 +151,47 @@ public class JSONHandler {
         lineItems = parseJSONArrayToLineItem(lineItemArray);
 
         // Links
-        links.put("self", linksObject.getJSONObject("self").getString("href"));
-        links.put("boleto_email", linksObject.getJSONObject("boleto_email").getString("href"));
-        links.put("barcode", linksObject.getJSONObject("barcode").getString("href"));
+        if (linksObject.has("self")) {
+            links.put("self", linksObject.getJSONObject("self").optString("href"));
+        }
+        if (linksObject.has("boleto_email")) {
+            links.put("boleto_email", linksObject.getJSONObject("boleto_email").optString("href"));
+        }
+        if (linksObject.has("barcode")) {
+            links.put("barcode", linksObject.getJSONObject("barcode").optString("href"));
+        }
 
         // Bill attributes
-        bill.setState(billObject.getString("state"));
-        bill.setId(billObject.getString("id"));
-        bill.setBarCode(billObject.getString("barcode"));
-        bill.setDigitableLine(billObject.getString("linha_digitavel"));
+        bill.setState(billObject.optString("state"));
+        bill.setId(billObject.optString("id"));
+        bill.setBarCode(billObject.optString("barcode"));
+        bill.setDigitableLine(billObject.optString("linha_digitavel"));
         bill.setSummary(summary);
         bill.setLinks(links);
         bill.setItems(lineItems);
 
         return bill;
+    }
+
+    // Do all the stuff from up
+    public static ArrayList<Bill> getBillsFromUrl() throws JSONException, ParseException {
+        ArrayList<Bill> bills = new ArrayList<>();
+
+        JSONArray jArray = null;
+        try {
+            jArray = new RESTHandler().execute("").get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        int size = jArray.length();
+        for (int i = 0; i < size; i++){
+            JSONObject jObject = (JSONObject) jArray.get(i);
+            bills.add(parseJSONObjectToBill(jObject));
+        }
+
+        return bills;
     }
 }

@@ -16,8 +16,12 @@ import android.view.MenuItem;
 import android.view.Window;
 
 import com.nubank.allan.billscreen.R;
+import com.nubank.allan.billscreen.controller.JSONHandler;
 import com.nubank.allan.billscreen.model.Bill;
 
+import org.json.JSONException;
+
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private Bill bill;
+    private ArrayList<Bill> billArray = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +38,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         String fileContent;
+        try {
+            billArray = JSONHandler.getBillsFromUrl();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         // Sets up the ViewPager (swipe through pages)
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
+        setupViewPager(viewPager, billArray);
 
         // Sets up the tabs using the ViewPager
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -45,12 +56,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Adds fragments to the ViewPager
-    private void setupViewPager(ViewPager vp){
+    private void setupViewPager(ViewPager vp, ArrayList<Bill> billArray){
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new MonthFragment(), "JANEIRO");
-        adapter.addFragment(new MonthFragment(), "FEVEREIRO");
-        adapter.addFragment(new MonthFragment(), "MARÇO");
-        adapter.addFragment(new MonthFragment(), "ABRIL");
+
+        int size = billArray.size();
+        for(int i = 0; i < size; i++){
+            adapter.addFragment(new MonthFragment(), billArray.get(i).getSummary().getDueMonth());
+        }
 
         vp.setAdapter(adapter);
     }

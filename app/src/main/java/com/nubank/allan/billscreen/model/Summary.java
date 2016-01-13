@@ -1,5 +1,6 @@
 package com.nubank.allan.billscreen.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -34,6 +35,10 @@ public class Summary {
 
     public Date getDueDate() {
         return dueDate;
+    }
+
+    public String getDueMonth(){
+        return (new SimpleDateFormat("MMM").format(dueDate.getTime())).toString();
     }
 
     public void setDueDate(Date dueDate) {

@@ -1,6 +1,8 @@
 package com.nubank.allan.billscreen.model;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 /**
@@ -84,4 +86,5 @@ public class Bill {
     public void setItems(ArrayList<LineItem> items) {
         this.items = items;
     }
+
 }

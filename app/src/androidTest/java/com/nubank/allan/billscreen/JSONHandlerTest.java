@@ -1,6 +1,7 @@
 package com.nubank.allan.billscreen;
 
 import com.nubank.allan.billscreen.controller.JSONHandler;
+import com.nubank.allan.billscreen.controller.RESTHandler;
 import com.nubank.allan.billscreen.model.Bill;
 import com.nubank.allan.billscreen.model.LineItem;
 import com.nubank.allan.billscreen.model.Summary;
@@ -15,22 +16,23 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Allan on 12/01/2016.
  */
 public class JSONHandlerTest extends TestCase{
 
-    public static void testGetJSONFromUrl_returnsJSONObject_whenCalled() throws JSONException {
+    public static void testGetJSONFromUrl_returnsJSONObject_whenCalled() throws JSONException, ExecutionException, InterruptedException {
         JSONArray jobj;
-        jobj = JSONHandler.getJSONArrayFromUrl("https://s3-sa-east-1.amazonaws.com/mobile-challenge/bill/bill_new.json");
+        jobj = new RESTHandler().execute("").get();
 
         Assert.assertNotNull(jobj);
     }
 
-    public static void testParseJSONArrayToLineItem_returnsLineItem_whenCalled() throws JSONException, ParseException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public static void testParseJSONArrayToLineItem_returnsLineItem_whenCalled() throws JSONException, ParseException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, ExecutionException, InterruptedException {
         JSONArray jsonArr;
-        jsonArr = JSONHandler.getJSONArrayFromUrl("https://s3-sa-east-1.amazonaws.com/mobile-challenge/bill/bill_new.json");
+        jsonArr = new RESTHandler().execute("").get();
         JSONObject object = (JSONObject) jsonArr.get(0);
 
         Method method = JSONHandler.class.getDeclaredMethod("parseJSONArrayToLineItem", JSONArray.class);
@@ -70,9 +72,9 @@ public class JSONHandlerTest extends TestCase{
         Assert.assertEquals("nuapp://transaction/55219aaa-2b9d-40bc-a8d3-bb31f14d2382", lineItems.get(3).getHref());
     }
 
-    public static void testParseJSONObjectToSummary_returnsSummary_when_called() throws JSONException, ParseException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public static void testParseJSONObjectToSummary_returnsSummary_when_called() throws JSONException, ParseException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, ExecutionException, InterruptedException {
         JSONArray jsonArr;
-        jsonArr = JSONHandler.getJSONArrayFromUrl("https://s3-sa-east-1.amazonaws.com/mobile-challenge/bill/bill_new.json");
+        jsonArr = new RESTHandler().execute("").get();
         JSONObject object = (JSONObject) jsonArr.get(0);
 
         Method method = JSONHandler.class.getDeclaredMethod("parseJSONObjectToSummary", JSONObject.class);
@@ -91,9 +93,9 @@ public class JSONHandlerTest extends TestCase{
         Assert.assertEquals(5840, summary.getMinPayment());
     }
 
-    public static void testParseJSONObjectToBill_returnsBill_whenCalled() throws JSONException, ParseException {
+    public static void testParseJSONObjectToBill_returnsBill_whenCalled() throws JSONException, ParseException, ExecutionException, InterruptedException {
         JSONArray jsonArr;
-        jsonArr = JSONHandler.getJSONArrayFromUrl("https://s3-sa-east-1.amazonaws.com/mobile-challenge/bill/bill_new.json");
+        jsonArr = new RESTHandler().execute().get();
         JSONObject object = (JSONObject) jsonArr.get(0);
         Bill bill = JSONHandler.parseJSONObjectToBill(object);
 
