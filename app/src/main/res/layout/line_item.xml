@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="false">
+
+    <TextView
+        android:id="@+id/itemDate"
+        android:padding="10dp"/>
+
+    <TextView
+        android:id="@+id/itemPlace"
+        android:padding="10dp"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/itemValue"
+        android:padding="10dp"
+        android:gravity="right"
+        android:textAlignment="gravity"
+        android:textColor="@color/black"/>
+
+</TableRow>

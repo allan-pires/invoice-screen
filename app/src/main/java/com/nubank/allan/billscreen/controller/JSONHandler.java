@@ -39,6 +39,7 @@ public class JSONHandler {
             // Summary - Date handling
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             java.sql.Date date;
+            double temp = 0.0;
 
             // Get the data from JSON
             if (summaryObject.has("close_date")){
@@ -54,22 +55,28 @@ public class JSONHandler {
                 summary.setOpenDate(date);
             }
             if (summaryObject.has("past_balance")){
-                summary.setPastBalance(summaryObject.getInt("past_balance"));
+                temp = (double)summaryObject.getInt("past_balance")/100;
+                summary.setPastBalance(temp);
             }
             if (summaryObject.has("total_balance")){
-                summary.setTotalBalance(summaryObject.getInt("total_balance"));
+                temp = (double)summaryObject.getInt("total_balance")/100;
+                summary.setTotalBalance(temp);
             }
             if (summaryObject.has("total_cumulative")){
-                summary.setTotalCumulative(summaryObject.getInt("total_cumulative"));
+                temp = (double)summaryObject.getInt("total_cumulative")/100;
+                summary.setTotalCumulative(temp);
             }
             if (summaryObject.has("interest")){
-                summary.setInterest(summaryObject.getInt("interest"));
+                temp = (double)summaryObject.getInt("interest")/100;
+                summary.setInterest(temp);
             }
             if (summaryObject.has("paid")){
-                summary.setPaid(summaryObject.getInt("paid"));
+                temp = (double)summaryObject.getInt("paid")/100;
+                summary.setPaid(temp);
             }
             if (summaryObject.has("minimum_payment")){
-                summary.setMinPayment(summaryObject.getInt("minimum_payment"));
+                temp = (double)summaryObject.getInt("minimum_payment")/100;
+                summary.setMinPayment(temp);
             }
         }
         catch (ParseException e) {
@@ -93,6 +100,7 @@ public class JSONHandler {
             try{
                 JSONObject lineItemObject = lineItemArray.getJSONObject(i);
                 LineItem temp = new LineItem();
+                double double_temp = 0.0;
 
                 // Get data from JSON and set temp variable
                 if (lineItemObject.has("post_date")){
@@ -101,7 +109,8 @@ public class JSONHandler {
                     temp.setPostDate(date);
                 }
                 if (lineItemObject.has("amount")) {
-                    temp.setAmount(lineItemObject.getInt("amount"));
+                    double_temp = (double)lineItemObject.getInt("amount")/100;
+                    temp.setAmount(double_temp);
                 }
                 if (lineItemObject.has("title")) {
                     temp.setTitle(lineItemObject.get("title").toString());
@@ -110,7 +119,8 @@ public class JSONHandler {
                     temp.setIndex(lineItemObject.getInt("index"));
                 }
                 if (lineItemObject.has("charges")) {
-                    temp.setCharges(lineItemObject.getInt("charges"));
+                    double_temp = (double)lineItemObject.getInt("charges")/100;
+                    temp.setCharges(double_temp);
                 }
                 if (lineItemObject.has("href")) {
                     temp.setHref(lineItemObject.getString("href"));

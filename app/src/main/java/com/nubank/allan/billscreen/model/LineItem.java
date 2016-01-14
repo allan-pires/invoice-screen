@@ -1,5 +1,6 @@
 package com.nubank.allan.billscreen.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -10,13 +11,13 @@ public class LineItem {
     private String title;
     private String href;
     private int index;
-    private int charges;
-    private int amount;
+    private double charges;
+    private double amount;
 
     public LineItem() {
     }
 
-    public LineItem(Date postDate, String title, String href, int index, int charges, int amount) {
+    public LineItem(Date postDate, String title, String href, int index, double charges, double amount) {
         this.postDate = postDate;
         this.title = title;
         this.href = href;
@@ -31,6 +32,10 @@ public class LineItem {
 
     public void setPostDate(Date postDate) {
         this.postDate = postDate;
+    }
+
+    public String getPostDateDayMonth(){
+        return (new SimpleDateFormat("dd MMM").format(postDate.getTime())).toString();
     }
 
     public String getTitle() {
@@ -57,19 +62,19 @@ public class LineItem {
         this.index = index;
     }
 
-    public int getCharges() {
+    public double getCharges() {
         return charges;
     }
 
-    public void setCharges(int charges) {
+    public void setCharges(double charges) {
         this.charges = charges;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 }

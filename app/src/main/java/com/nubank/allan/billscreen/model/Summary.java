@@ -10,18 +10,18 @@ public class Summary {
 
     private Date dueDate;
     private Date closeDate;
-    private int pastBalance;
-    private int totalBalance;
-    private int interest;
-    private int totalCumulative;
-    private int paid;
-    private int minPayment;
+    private double pastBalance;
+    private double totalBalance;
+    private double interest;
+    private double totalCumulative;
+    private double paid;
+    private double minPayment;
     private Date openDate;
 
     public Summary() {
     }
 
-    public Summary(Date dueDate, Date closeDate, int pastBalance, int totalBalance, int interest, int totalCumulative, int paid, int minPayment, Date openDate) {
+    public Summary(Date dueDate, Date closeDate, double pastBalance, double totalBalance, double interest, double totalCumulative, double paid, double minPayment, Date openDate) {
         this.dueDate = dueDate;
         this.closeDate = closeDate;
         this.pastBalance = pastBalance;
@@ -57,47 +57,47 @@ public class Summary {
         this.closeDate = closeDate;
     }
 
-    public int getPastBalance() {
+    public double getPastBalance() {
         return pastBalance;
     }
 
-    public void setPastBalance(int pastBalance) {
+    public void setPastBalance(double pastBalance) {
         this.pastBalance = pastBalance;
     }
 
-    public int getTotalBalance() {
+    public double getTotalBalance() {
         return totalBalance;
     }
 
-    public void setTotalBalance(int totalBalance) {
+    public void setTotalBalance(double totalBalance) {
         this.totalBalance = totalBalance;
     }
 
-    public int getInterest() {
+    public double getInterest() {
         return interest;
     }
 
-    public void setInterest(int interest) {
+    public void setInterest(double interest) {
         this.interest = interest;
     }
 
-    public int getTotalCumulative() { return totalCumulative; }
+    public double getTotalCumulative() { return totalCumulative; }
 
-    public void setTotalCumulative(int totalCumulative) { this.totalCumulative = totalCumulative; }
+    public void setTotalCumulative(double totalCumulative) { this.totalCumulative = totalCumulative; }
 
-    public int getPaid() {
+    public double getPaid() {
         return paid;
     }
 
-    public void setPaid(int paid) {
+    public void setPaid(double paid) {
         this.paid = paid;
     }
 
-    public int getMinPayment() {
+    public double getMinPayment() {
         return minPayment;
     }
 
-    public void setMinPayment(int minPayment) {
+    public void setMinPayment(double minPayment) {
         this.minPayment = minPayment;
     }
 

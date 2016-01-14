@@ -6,6 +6,7 @@
 
     <color name="white">#FFF</color>
     <color name="black">#000</color>
+    <color name="softgrey">#FCFCFC</color>
     <color name="grey">#CCC</color>
     <color name="blue">#FF33B5E5</color>
     <color name="purple">#FFAA66CC</color>

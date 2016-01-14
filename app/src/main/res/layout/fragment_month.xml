@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:id="@+id/HeaderLayout"
-        android:padding="40dp"
+        android:padding="35dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"/>
 
         <TextView
-            android:id="@+id/headerDetail"
+            android:id="@+id/closeDate"
             android:textColor="@color/white"
             android:textSize="15dp"
             android:textAlignment="center"
@@ -38,12 +38,32 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/BodyLayout"
+        android:id="@+id/HeaderDetails"
+        android:padding="20dp"
         android:layout_below="@+id/HeaderLayout"
+        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
     </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey"
+        android:layout_below="@+id/HeaderDetails">
+
+        <TableLayout
+            android:id="@+id/LineItems"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:shrinkColumns="1"
+            android:stretchColumns="1"
+            android:orientation="vertical">
+
+        </TableLayout>
+
+    </ScrollView>
 
 </RelativeLayout>
