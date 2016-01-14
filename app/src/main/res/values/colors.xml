@@ -17,4 +17,11 @@
     <color name="darkgreen">#FF669900</color>
     <color name="darkorange">#FFFF8800</color>
     <color name="darkred">#FFCC0000</color>
+    <color name="softblue">#40AAB9</color>
+    <color name="softgreen">#7ED321</color>
+    <color name="softorange">#F5A623</color>
+    <color name="softred">#E5615C</color>
+
+
+
 </resources>

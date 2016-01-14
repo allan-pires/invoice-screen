@@ -1,33 +1,49 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/FragmentLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.nubank.allan.billscreen.view.fragments.MonthFragment">
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/LayoutHeader"
-        android:layout_width="fill_parent"
+        android:id="@+id/HeaderLayout"
+        android:padding="40dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:orientation="vertical"
-        android:background="@color/black" >
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/totalAmount"
+            android:textColor="@color/white"
+            android:textSize="25dp"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/dueDate"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/headerDetail"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/LayoutHeader"
-        android:padding="10dp">
+    <LinearLayout
+        android:id="@+id/BodyLayout"
+        android:layout_below="@+id/HeaderLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <ListView
-            android:id="@+id/ListViewFragment"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
-        </ListView>
-
-    </ScrollView>
+    </LinearLayout>
 
 </RelativeLayout>

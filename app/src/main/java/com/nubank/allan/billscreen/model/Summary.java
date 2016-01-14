@@ -41,6 +41,10 @@ public class Summary {
         return (new SimpleDateFormat("MMM").format(dueDate.getTime())).toString();
     }
 
+    public String getDueDayMonth(){
+        return (new SimpleDateFormat("dd MMM").format(dueDate.getTime())).toString();
+    }
+
     public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
     }

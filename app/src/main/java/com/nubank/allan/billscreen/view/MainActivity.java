@@ -1,5 +1,6 @@
 package com.nubank.allan.billscreen.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -7,6 +8,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,51 +19,62 @@ import android.view.Window;
 
 import com.nubank.allan.billscreen.R;
 import com.nubank.allan.billscreen.controller.JSONHandler;
+import com.nubank.allan.billscreen.controller.RESTHandler;
 import com.nubank.allan.billscreen.model.Bill;
+import com.nubank.allan.billscreen.view.fragment.MonthFragment;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private ArrayList<Bill> billArray = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String fileContent;
+        // Sets up the ViewPager (swipe through pages)
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
         try {
-            billArray = JSONHandler.getBillsFromUrl();
-        } catch (JSONException e) {
+            setupViewPager(viewPager);
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
-        // Sets up the ViewPager (swipe through pages)
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager, billArray);
-
         // Sets up the tabs using the ViewPager
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
     }
 
     // Adds fragments to the ViewPager
-    private void setupViewPager(ViewPager vp, ArrayList<Bill> billArray){
+    private void setupViewPager(ViewPager vp) throws ExecutionException, InterruptedException, JSONException, ParseException {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        RESTHandler asyncTask = new RESTHandler();
+        JSONArray jsonArray = asyncTask.execute().get();
 
-        int size = billArray.size();
+        int size = jsonArray.length();
         for(int i = 0; i < size; i++){
-            adapter.addFragment(new MonthFragment(), billArray.get(i).getSummary().getDueMonth());
+            Bill bill = JSONHandler.parseJSONObjectToBill((JSONObject) jsonArray.get(i));
+            Bundle bundle = new Bundle();
+            bundle.putString("jsonObject", jsonArray.get(i).toString());
+            MonthFragment fragment = MonthFragment.newInstance(bundle);
+
+            adapter.addFragment(fragment, bill.getSummary().getDueMonth());
         }
 
         vp.setAdapter(adapter);
