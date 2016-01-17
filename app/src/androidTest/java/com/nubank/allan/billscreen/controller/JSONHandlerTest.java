@@ -1,4 +1,4 @@
-package com.nubank.allan.billscreen;
+package com.nubank.allan.billscreen.controller;
 
 import com.nubank.allan.billscreen.controller.JSONHandler;
 import com.nubank.allan.billscreen.controller.RESTHandler;
@@ -41,7 +41,7 @@ public class JSONHandlerTest extends TestCase{
 
         // ItemLine 1
         Assert.assertEquals("2015-03-31", lineItems.get(0).getPostDate().toString());
-        Assert.assertEquals(3850, lineItems.get(0).getAmount());
+        Assert.assertEquals(38.50, lineItems.get(0).getAmount());
         Assert.assertEquals("Rest Bolinha", lineItems.get(0).getTitle());
         Assert.assertEquals(0, lineItems.get(0).getIndex());
         Assert.assertEquals(1, lineItems.get(0).getCharges());
@@ -49,7 +49,7 @@ public class JSONHandlerTest extends TestCase{
 
         // ItemLine 2
         Assert.assertEquals("2015-03-31", lineItems.get(1).getPostDate().toString());
-        Assert.assertEquals(12505, lineItems.get(1).getAmount());
+        Assert.assertEquals(125.05, lineItems.get(1).getAmount());
         Assert.assertEquals("Posto de Servico Dinam", lineItems.get(1).getTitle());
         Assert.assertEquals(0, lineItems.get(1).getIndex());
         Assert.assertEquals(1, lineItems.get(1).getCharges());
@@ -57,7 +57,7 @@ public class JSONHandlerTest extends TestCase{
 
         // ItemLine 3
         Assert.assertEquals("2015-04-02", lineItems.get(2).getPostDate().toString());
-        Assert.assertEquals(4180, lineItems.get(2).getAmount());
+        Assert.assertEquals(41.80, lineItems.get(2).getAmount());
         Assert.assertEquals("Brunetto Massa e Risot", lineItems.get(2).getTitle());
         Assert.assertEquals(0, lineItems.get(2).getIndex());
         Assert.assertEquals(1, lineItems.get(2).getCharges());
@@ -65,7 +65,7 @@ public class JSONHandlerTest extends TestCase{
 
         // ItemLine 4
         Assert.assertEquals("2015-04-07", lineItems.get(3).getPostDate().toString());
-        Assert.assertEquals(18398, lineItems.get(3).getAmount());
+        Assert.assertEquals(183.98, lineItems.get(3).getAmount());
         Assert.assertEquals("Pao de Acucar Lj", lineItems.get(3).getTitle());
         Assert.assertEquals(0, lineItems.get(3).getIndex());
         Assert.assertEquals(1, lineItems.get(3).getCharges());
@@ -85,12 +85,12 @@ public class JSONHandlerTest extends TestCase{
         Assert.assertEquals("2015-04-20", summary.getDueDate().toString());
         Assert.assertEquals("2015-04-07", summary.getCloseDate().toString());
         Assert.assertEquals("2015-03-17", summary.getOpenDate().toString());
-        Assert.assertEquals(0, summary.getPastBalance());
-        Assert.assertEquals(38933, summary.getTotalBalance());
-        Assert.assertEquals(0, summary.getInterest());
-        Assert.assertEquals(38933, summary.getTotalCumulative());
-        Assert.assertEquals(38933, summary.getPaid());
-        Assert.assertEquals(5840, summary.getMinPayment());
+        Assert.assertEquals(0.0, summary.getPastBalance());
+        Assert.assertEquals(389.33, summary.getTotalBalance());
+        Assert.assertEquals(0.0, summary.getInterest());
+        Assert.assertEquals(389.33, summary.getTotalCumulative());
+        Assert.assertEquals(389.33, summary.getPaid());
+        Assert.assertEquals(58.40, summary.getMinPayment());
     }
 
     public static void testParseJSONObjectToBill_returnsBill_whenCalled() throws JSONException, ParseException, ExecutionException, InterruptedException {
@@ -109,12 +109,12 @@ public class JSONHandlerTest extends TestCase{
         Assert.assertEquals("2015-04-20", bill.getSummary().getDueDate().toString());
         Assert.assertEquals("2015-04-07", bill.getSummary().getCloseDate().toString());
         Assert.assertEquals("2015-03-17", bill.getSummary().getOpenDate().toString());
-        Assert.assertEquals(0, bill.getSummary().getPastBalance());
-        Assert.assertEquals(38933, bill.getSummary().getTotalBalance());
-        Assert.assertEquals(0, bill.getSummary().getInterest());
-        Assert.assertEquals(38933, bill.getSummary().getTotalCumulative());
-        Assert.assertEquals(38933, bill.getSummary().getPaid());
-        Assert.assertEquals(5840, bill.getSummary().getMinPayment());
+        Assert.assertEquals(0.0, bill.getSummary().getPastBalance());
+        Assert.assertEquals(389.33, bill.getSummary().getTotalBalance());
+        Assert.assertEquals(0.0, bill.getSummary().getInterest());
+        Assert.assertEquals(389.33, bill.getSummary().getTotalCumulative());
+        Assert.assertEquals(389.33, bill.getSummary().getPaid());
+        Assert.assertEquals(58.40, bill.getSummary().getMinPayment());
 
         // Links
         Assert.assertEquals("https://prod-accounts.nubank.com.br/api/bills/55256cd0-10f7-4fd3-a3be-213bfe01857d", bill.getLinks().get("self"));
@@ -123,7 +123,7 @@ public class JSONHandlerTest extends TestCase{
 
         // ItemLine 1
         Assert.assertEquals("2015-03-31", bill.getItems().get(0).getPostDate().toString());
-        Assert.assertEquals(3850, bill.getItems().get(0).getAmount());
+        Assert.assertEquals(38.50, bill.getItems().get(0).getAmount());
         Assert.assertEquals("Rest Bolinha", bill.getItems().get(0).getTitle());
         Assert.assertEquals(0, bill.getItems().get(0).getIndex());
         Assert.assertEquals(1, bill.getItems().get(0).getCharges());
@@ -131,7 +131,7 @@ public class JSONHandlerTest extends TestCase{
 
         // ItemLine 2
         Assert.assertEquals("2015-03-31", bill.getItems().get(1).getPostDate().toString());
-        Assert.assertEquals(12505, bill.getItems().get(1).getAmount());
+        Assert.assertEquals(125.05, bill.getItems().get(1).getAmount());
         Assert.assertEquals("Posto de Servico Dinam", bill.getItems().get(1).getTitle());
         Assert.assertEquals(0, bill.getItems().get(1).getIndex());
         Assert.assertEquals(1, bill.getItems().get(1).getCharges());
@@ -139,7 +139,7 @@ public class JSONHandlerTest extends TestCase{
 
         // ItemLine 3
         Assert.assertEquals("2015-04-02", bill.getItems().get(2).getPostDate().toString());
-        Assert.assertEquals(4180, bill.getItems().get(2).getAmount());
+        Assert.assertEquals(41.80, bill.getItems().get(2).getAmount());
         Assert.assertEquals("Brunetto Massa e Risot", bill.getItems().get(2).getTitle());
         Assert.assertEquals(0, bill.getItems().get(2).getIndex());
         Assert.assertEquals(1, bill.getItems().get(2).getCharges());
@@ -147,7 +147,7 @@ public class JSONHandlerTest extends TestCase{
 
         // ItemLine 4
         Assert.assertEquals("2015-04-07", bill.getItems().get(3).getPostDate().toString());
-        Assert.assertEquals(18398, bill.getItems().get(3).getAmount());
+        Assert.assertEquals(183.98, bill.getItems().get(3).getAmount());
         Assert.assertEquals("Pao de Acucar Lj", bill.getItems().get(3).getTitle());
         Assert.assertEquals(0, bill.getItems().get(3).getIndex());
         Assert.assertEquals(1, bill.getItems().get(3).getCharges());

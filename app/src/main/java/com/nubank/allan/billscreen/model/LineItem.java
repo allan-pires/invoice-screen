@@ -11,13 +11,13 @@ public class LineItem {
     private String title;
     private String href;
     private int index;
-    private double charges;
+    private int charges;
     private double amount;
 
     public LineItem() {
     }
 
-    public LineItem(Date postDate, String title, String href, int index, double charges, double amount) {
+    public LineItem(Date postDate, String title, String href, int index, int charges, double amount) {
         this.postDate = postDate;
         this.title = title;
         this.href = href;
@@ -62,11 +62,11 @@ public class LineItem {
         this.index = index;
     }
 
-    public double getCharges() {
+    public int getCharges() {
         return charges;
     }
 
-    public void setCharges(double charges) {
+    public void setCharges(int charges) {
         this.charges = charges;
     }
 

@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">BillScreen</string>
+    <string name="error_name">ErrorScreen</string>
     <string name="action_settings">Settings</string>
+    <string name="ops">OOPS, algo deu errado!</string>
+    <string name="no_connection">Sem internet, por favor verifique sua conexão :(</string>
+    <string name="ok">Ok, I will.</string>
+    <string name="error">Ele está morto, Jim!</string>
 </resources>

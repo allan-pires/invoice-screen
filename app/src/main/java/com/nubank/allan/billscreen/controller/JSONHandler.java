@@ -119,8 +119,7 @@ public class JSONHandler {
                     temp.setIndex(lineItemObject.getInt("index"));
                 }
                 if (lineItemObject.has("charges")) {
-                    double_temp = (double)lineItemObject.getInt("charges")/100;
-                    temp.setCharges(double_temp);
+                    temp.setCharges(lineItemObject.getInt("charges"));
                 }
                 if (lineItemObject.has("href")) {
                     temp.setHref(lineItemObject.getString("href"));
