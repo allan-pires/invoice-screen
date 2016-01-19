@@ -1,6 +1,5 @@
 package com.nubank.allan.billscreen.view;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,8 +16,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import com.nubank.allan.billscreen.R;
+import com.nubank.allan.billscreen.controller.ExceptionHandler;
 import com.nubank.allan.billscreen.controller.JSONHandler;
-import com.nubank.allan.billscreen.controller.RESTHandler;
+import com.nubank.allan.billscreen.controller.HTTPConnectionHandler;
 import com.nubank.allan.billscreen.model.Bill;
 import com.nubank.allan.billscreen.view.fragment.MonthFragment;
 
@@ -35,74 +35,45 @@ public class MainActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private HTTPConnectionHandler connectionHandler = new HTTPConnectionHandler(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         setContentView(R.layout.activity_main);
 
-        if (isConnectedToInternet()) {
-            // Sets up the ViewPager (swipe through pages)
-            viewPager = (ViewPager) findViewById(R.id.viewpager);
-            try {
-                setupViewPager(viewPager);
+        // Sets up the ViewPager (swipe through pages)
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
 
-                // Sets up the tabs using the ViewPager
-                tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-                tabLayout.setupWithViewPager(viewPager);
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        else{
-            new AlertDialog.Builder(this)
-                    .setMessage(R.string.no_connection)
-                    .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
-        }
-    }
+        setupViewPager(viewPager);
 
-    public boolean isConnectedToInternet(){
-        ConnectivityManager connectivity = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivity != null)
-        {
-            NetworkInfo[] info = connectivity.getAllNetworkInfo();
-            if (info != null)
-                for (int i = 0; i < info.length; i++)
-                    if (info[i].getState() == NetworkInfo.State.CONNECTED)
-                    {
-                        return true;
-                    }
-
-        }
-        return false;
+        // Sets up the tabs using the ViewPager
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     // Adds fragments to the ViewPager
-    private void setupViewPager(ViewPager vp) throws ExecutionException, InterruptedException, JSONException, ParseException {
+    private void setupViewPager(ViewPager vp){
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        RESTHandler asyncTask = new RESTHandler();
-        JSONArray jsonArray = asyncTask.execute().get();
+        HTTPConnectionHandler httpHandler = new HTTPConnectionHandler(this);
+        JSONHandler jsonHandler = new JSONHandler(this);
+        JSONArray jsonArray = httpHandler.getJSONArrayData();
 
         int size = jsonArray.length();
-        for(int i = 0; i < size; i++){
-            Bill bill = JSONHandler.parseJSONObjectToBill((JSONObject) jsonArray.get(i));
-            Bundle bundle = new Bundle();
-            bundle.putString("jsonObject", jsonArray.get(i).toString());
-            MonthFragment fragment = MonthFragment.newInstance(bundle);
+        try {
+            for(int i = 0; i < size; i++){
+                Bill bill = jsonHandler.parseJSONObjectToBill((JSONObject) jsonArray.get(i));
+                Bundle bundle = new Bundle();
 
-            adapter.addFragment(fragment, bill.getSummary().getDueMonth());
+                bundle.putString("jsonObject", jsonArray.get(i).toString());
+                MonthFragment fragment = MonthFragment.newInstance(bundle);
+
+                adapter.addFragment(fragment, bill.getSummary().getDueMonth());
+            }
+        }
+        catch (JSONException e){
+            e.printStackTrace();
         }
 
         vp.setAdapter(adapter);

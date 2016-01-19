@@ -1,5 +1,6 @@
 package com.nubank.allan.billscreen.controller;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.nubank.allan.billscreen.model.Bill;
@@ -10,12 +11,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,10 +23,15 @@ import java.util.concurrent.ExecutionException;
 
 public class JSONHandler {
 
-    static private JSONArray jsonArray = null;
+    private JSONArray jsonArray = null;
+    private Context context;
+
+    public JSONHandler(Context context){
+        this.context = context;
+    }
 
     // Parses JSONObject -> Summary
-    private static Summary parseJSONObjectToSummary(JSONObject summaryObject){
+    private Summary parseJSONObjectToSummary(JSONObject summaryObject){
 
         Summary summary = new Summary();
 
@@ -80,16 +80,18 @@ public class JSONHandler {
             }
         }
         catch (ParseException e) {
-            e.printStackTrace();
+            Log.d("ERROR: ", e.getMessage());
+            ExceptionHandler.showErrorActivity(context, e.getMessage());
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.d("ERROR: ", e.getMessage());
+            ExceptionHandler.showErrorActivity(context, e.getMessage());
         }
 
         return summary;
     }
 
     // Parses JSONObject -> ArrayList<LineItem>
-    private static ArrayList<LineItem> parseJSONArrayToLineItem(JSONArray lineItemArray){
+    private ArrayList<LineItem> parseJSONArrayToLineItem(JSONArray lineItemArray){
 
         // Variables
         ArrayList<LineItem> lineItems = new ArrayList<>();
@@ -128,10 +130,12 @@ public class JSONHandler {
                 lineItems.add(temp);
             }
             catch (ParseException e) {
-                e.printStackTrace();
+                Log.d("ERROR: ", e.getMessage());
+                ExceptionHandler.showErrorActivity(context, e.getMessage());
             }
             catch (JSONException e) {
-                e.printStackTrace();
+                Log.d("ERROR: ", e.getMessage());
+                ExceptionHandler.showErrorActivity(context, e.getMessage());
             }
         }
 
@@ -139,7 +143,7 @@ public class JSONHandler {
     }
 
     // Parses JSONObject -> Bill
-    public static Bill parseJSONObjectToBill(JSONObject json) throws JSONException, ParseException {
+    public Bill parseJSONObjectToBill(JSONObject json) throws JSONException {
 
         // Final type objects
         Bill bill = new Bill();
@@ -147,53 +151,50 @@ public class JSONHandler {
         ArrayList<LineItem> lineItems = new ArrayList<>();
         HashMap<String, String> links = new HashMap<>();
 
+
         // JSONObjects from file
         JSONObject billObject = json.getJSONObject("bill");
         JSONObject summaryObject = billObject.getJSONObject("summary");
         JSONObject linksObject = billObject.getJSONObject("_links");
-        JSONArray lineItemArray = billObject.getJSONArray("line_items");
+        JSONArray lineItemArray = null;
 
-        // Summary
-        summary = parseJSONObjectToSummary(summaryObject);
+            lineItemArray = billObject.getJSONArray("line_items");
 
-        // LineItem
-        lineItems = parseJSONArrayToLineItem(lineItemArray);
+            // Summary
+            summary = parseJSONObjectToSummary(summaryObject);
 
-        // Links
-        if (linksObject.has("self")) {
-            links.put("self", linksObject.getJSONObject("self").optString("href"));
-        }
-        if (linksObject.has("boleto_email")) {
-            links.put("boleto_email", linksObject.getJSONObject("boleto_email").optString("href"));
-        }
-        if (linksObject.has("barcode")) {
-            links.put("barcode", linksObject.getJSONObject("barcode").optString("href"));
-        }
+            // LineItem
+            lineItems = parseJSONArrayToLineItem(lineItemArray);
 
-        // Bill attributes
-        bill.setState(billObject.optString("state"));
-        bill.setId(billObject.optString("id"));
-        bill.setBarCode(billObject.optString("barcode"));
-        bill.setDigitableLine(billObject.optString("linha_digitavel"));
-        bill.setSummary(summary);
-        bill.setLinks(links);
-        bill.setItems(lineItems);
+            // Links
+            if (linksObject.has("self")) {
+                links.put("self", linksObject.getJSONObject("self").optString("href"));
+            }
+            if (linksObject.has("boleto_email")) {
+                links.put("boleto_email", linksObject.getJSONObject("boleto_email").optString("href"));
+            }
+            if (linksObject.has("barcode")) {
+                links.put("barcode", linksObject.getJSONObject("barcode").optString("href"));
+            }
+
+            // Bill attributes
+            bill.setState(billObject.optString("state"));
+            bill.setId(billObject.optString("id"));
+            bill.setBarCode(billObject.optString("barcode"));
+            bill.setDigitableLine(billObject.optString("linha_digitavel"));
+            bill.setSummary(summary);
+            bill.setLinks(links);
+            bill.setItems(lineItems);
+
 
         return bill;
     }
 
     // Do all the stuff from up
-    public static ArrayList<Bill> getBillsFromUrl() throws JSONException, ParseException {
+    public ArrayList<Bill> getBillsFromUrl() throws JSONException, ParseException {
         ArrayList<Bill> bills = new ArrayList<>();
-
-        JSONArray jArray = null;
-        try {
-            jArray = new RESTHandler().execute("").get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        HTTPConnectionHandler httpHander = new HTTPConnectionHandler(context);
+        JSONArray jArray = httpHander.getJSONArrayData();
 
         int size = jArray.length();
         for (int i = 0; i < size; i++){

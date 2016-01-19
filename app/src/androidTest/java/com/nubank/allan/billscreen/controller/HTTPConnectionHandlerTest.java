@@ -1,7 +1,5 @@
 package com.nubank.allan.billscreen.controller;
 
-import com.nubank.allan.billscreen.controller.RESTHandler;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -13,9 +11,9 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by doisl_000 on 1/16/2016.
  */
-public class RESTHandlerTest extends TestCase {
+public class HTTPConnectionHandlerTest extends TestCase {
     public void testExecute_returnsJSONArray_when_Called() throws ExecutionException, InterruptedException, JSONException {
-        RESTHandler async = new RESTHandler();
+        HTTPConnectionHandler async = new HTTPConnectionHandler();
         JSONArray returned = async.execute().get();
         JSONArray expected = new JSONArray("[\n" +
                 "  {\n" +

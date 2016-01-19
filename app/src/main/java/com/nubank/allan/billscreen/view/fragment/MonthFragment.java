@@ -50,16 +50,15 @@ public class MonthFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_month, container, false);
 
+
         if (getArguments() != null){
             try {
                 JSONObject obj = new JSONObject(getArguments().getString("jsonObject"));
-                bill = JSONHandler.parseJSONObjectToBill(obj);
+                JSONHandler jsonHandler = new JSONHandler(this.getContext());
+                bill = jsonHandler.parseJSONObjectToBill(obj);
                 setLayout(view, bill);
             }
             catch (JSONException e) {
-                e.printStackTrace();
-            }
-            catch (ParseException e) {
                 e.printStackTrace();
             }
         }
