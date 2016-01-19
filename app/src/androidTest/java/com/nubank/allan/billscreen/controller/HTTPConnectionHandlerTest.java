@@ -1,5 +1,9 @@
 package com.nubank.allan.billscreen.controller;
 
+import android.app.Activity;
+
+import com.nubank.allan.billscreen.view.MainActivity;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -13,8 +17,10 @@ import java.util.concurrent.ExecutionException;
  */
 public class HTTPConnectionHandlerTest extends TestCase {
     public void testExecute_returnsJSONArray_when_Called() throws ExecutionException, InterruptedException, JSONException {
-        HTTPConnectionHandler async = new HTTPConnectionHandler();
-        JSONArray returned = async.execute().get();
+        MainActivity main = new MainActivity();
+        
+        HTTPConnectionHandler async = new HTTPConnectionHandler(main);
+        JSONArray returned = async.getJSONArrayData();
         JSONArray expected = new JSONArray("[\n" +
                 "  {\n" +
                 "    \"bill\": {\n" +

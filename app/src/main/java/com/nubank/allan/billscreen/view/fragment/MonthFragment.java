@@ -54,7 +54,7 @@ public class MonthFragment extends Fragment {
         if (getArguments() != null){
             try {
                 JSONObject obj = new JSONObject(getArguments().getString("jsonObject"));
-                JSONHandler jsonHandler = new JSONHandler(this.getContext());
+                JSONHandler jsonHandler = new JSONHandler(this.getActivity());
                 bill = jsonHandler.parseJSONObjectToBill(obj);
                 setLayout(view, bill);
             }

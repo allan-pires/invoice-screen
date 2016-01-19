@@ -2,38 +2,36 @@ package com.nubank.allan.billscreen.controller;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
-import android.provider.Settings;
-import android.support.v7.app.AlertDialog;
 
 import com.nubank.allan.billscreen.view.ErrorActivity;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 /**
  * Created by doisl_000 on 1/17/2016.
  */
-public class ExceptionHandler implements java.lang.Thread.UncaughtExceptionHandler {
+public class ExceptionHandler {
 
-    private Activity context = null;
+    public Activity owner;
 
-    public ExceptionHandler(Activity context) {
-        this.context = context;
+    public ExceptionHandler(Activity owner) {
+        this.owner = owner;
     }
 
-    @Override
-    public void uncaughtException(Thread thread, Throwable ex) {
+    public void showErrorActivity(Context context, String code){
+        String extra = getMessageFromCode(code);
         Intent intent = new Intent(context, ErrorActivity.class);
-        intent.putExtra("error_message", ex.getMessage());
-        context.startActivity(intent);
+        intent.putExtra("error_code", code);
+        intent.putExtra("error_message", extra);
+        owner.startActivity(intent);
+        owner.finish();
     }
 
-    public static void showErrorActivity(Context context, String message){
-        Intent intent = new Intent(context, ErrorActivity.class);
-        intent.putExtra("error_message", message);
-        context.startActivity(intent);
+    public String getMessageFromCode(String code){
+        switch (code.charAt(0)){
+            case 'N': return "Parece que você está sem internet!\nPor favor, verifique a sua conexão e tente novamente.";
+            case '4': return "Houve algum erro com o seu pedido.";
+            case '5': return "Desculpe, estamos enfrentando problemas técnicos. Por favor, tente novamente mais tarde.";
+            default: return "Desculpe, ocorreu algum problema durante a execução do aplicativo. Por favor, tente novamente mais tarde.";
+        }
     }
 }

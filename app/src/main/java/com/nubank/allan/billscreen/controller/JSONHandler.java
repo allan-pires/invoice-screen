@@ -1,6 +1,6 @@
 package com.nubank.allan.billscreen.controller;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.nubank.allan.billscreen.model.Bill;
@@ -15,7 +15,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Allan on 12/01/2016.
@@ -23,11 +22,13 @@ import java.util.concurrent.ExecutionException;
 
 public class JSONHandler {
 
-    private JSONArray jsonArray = null;
-    private Context context;
+    private Activity owner;
+    private static ExceptionHandler exceptionHandler;
 
-    public JSONHandler(Context context){
-        this.context = context;
+    public JSONHandler(Activity owner){
+
+        this.owner = owner;
+        this.exceptionHandler = new ExceptionHandler(owner);
     }
 
     // Parses JSONObject -> Summary
@@ -81,10 +82,11 @@ public class JSONHandler {
         }
         catch (ParseException e) {
             Log.d("ERROR: ", e.getMessage());
-            ExceptionHandler.showErrorActivity(context, e.getMessage());
-        } catch (JSONException e) {
+            exceptionHandler.showErrorActivity(owner.getApplicationContext(), "err_parse");
+        }
+        catch (JSONException e) {
             Log.d("ERROR: ", e.getMessage());
-            ExceptionHandler.showErrorActivity(context, e.getMessage());
+            exceptionHandler.showErrorActivity(owner.getApplicationContext(), "err_json");
         }
 
         return summary;
@@ -131,11 +133,11 @@ public class JSONHandler {
             }
             catch (ParseException e) {
                 Log.d("ERROR: ", e.getMessage());
-                ExceptionHandler.showErrorActivity(context, e.getMessage());
+                exceptionHandler.showErrorActivity(owner.getApplicationContext(), "err_parse");
             }
             catch (JSONException e) {
                 Log.d("ERROR: ", e.getMessage());
-                ExceptionHandler.showErrorActivity(context, e.getMessage());
+                exceptionHandler.showErrorActivity(owner.getApplicationContext(), "err_json");
             }
         }
 
@@ -193,7 +195,7 @@ public class JSONHandler {
     // Do all the stuff from up
     public ArrayList<Bill> getBillsFromUrl() throws JSONException, ParseException {
         ArrayList<Bill> bills = new ArrayList<>();
-        HTTPConnectionHandler httpHander = new HTTPConnectionHandler(context);
+        HTTPConnectionHandler httpHander = new HTTPConnectionHandler(owner);
         JSONArray jArray = httpHander.getJSONArrayData();
 
         int size = jArray.length();

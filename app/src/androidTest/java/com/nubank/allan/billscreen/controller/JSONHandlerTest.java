@@ -1,5 +1,7 @@
 package com.nubank.allan.billscreen.controller;
 
+import android.app.Activity;
+
 import com.nubank.allan.billscreen.model.Bill;
 import com.nubank.allan.billscreen.model.LineItem;
 import com.nubank.allan.billscreen.model.Summary;
@@ -23,14 +25,14 @@ public class JSONHandlerTest extends TestCase{
 
     public static void testGetJSONFromUrl_returnsJSONObject_whenCalled() throws JSONException, ExecutionException, InterruptedException {
         JSONArray jobj;
-        jobj = new HTTPConnectionHandler().execute("").get();
+        jobj = new HTTPConnectionHandler(new Activity()).getJSONArrayData();
 
         Assert.assertNotNull(jobj);
     }
 
     public static void testParseJSONArrayToLineItem_returnsLineItem_whenCalled() throws JSONException, ParseException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, ExecutionException, InterruptedException {
         JSONArray jsonArr;
-        jsonArr = new HTTPConnectionHandler().execute("").get();
+        jsonArr = new HTTPConnectionHandler(new Activity()).getJSONArrayData();
         JSONObject object = (JSONObject) jsonArr.get(0);
 
         Method method = JSONHandler.class.getDeclaredMethod("parseJSONArrayToLineItem", JSONArray.class);
@@ -72,7 +74,7 @@ public class JSONHandlerTest extends TestCase{
 
     public static void testParseJSONObjectToSummary_returnsSummary_when_called() throws JSONException, ParseException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, ExecutionException, InterruptedException {
         JSONArray jsonArr;
-        jsonArr = new HTTPConnectionHandler().execute("").get();
+        jsonArr = new HTTPConnectionHandler(new Activity()).getJSONArrayData();
         JSONObject object = (JSONObject) jsonArr.get(0);
 
         Method method = JSONHandler.class.getDeclaredMethod("parseJSONObjectToSummary", JSONObject.class);
@@ -93,9 +95,9 @@ public class JSONHandlerTest extends TestCase{
 
     public static void testParseJSONObjectToBill_returnsBill_whenCalled() throws JSONException, ParseException, ExecutionException, InterruptedException {
         JSONArray jsonArr;
-        jsonArr = new HTTPConnectionHandler().execute().get();
+        jsonArr = new HTTPConnectionHandler(new Activity()).getJSONArrayData();
         JSONObject object = (JSONObject) jsonArr.get(0);
-        Bill bill = JSONHandler.parseJSONObjectToBill(object);
+        Bill bill = new JSONHandler(new Activity()).parseJSONObjectToBill(object);
 
         // Bill
         Assert.assertEquals("overdue", bill.getState());
