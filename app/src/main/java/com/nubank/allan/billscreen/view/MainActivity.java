@@ -1,12 +1,17 @@
 package com.nubank.allan.billscreen.view;
 
+import android.app.FragmentTransaction;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.RelativeLayout;
 
 import com.nubank.allan.billscreen.R;
 import com.nubank.allan.billscreen.controller.ExceptionHandler;
@@ -20,13 +25,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private HTTPConnectionHandler connectionHandler = new HTTPConnectionHandler(this);
+    private static final int[] TABS_BACKGROUND = {
+            R.drawable.tab_selector_overdue,
+            R.drawable.tab_selector_closed };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
                     bundle.putString("jsonObject", jsonArray.get(i).toString());
                     MonthFragment fragment = MonthFragment.newInstance(bundle);
 
-                    adapter.addFragment(fragment, bill.getSummary().getDueMonth());
+                    Date due_month = bill.getSummary().getDueDate();
+                    adapter.addFragment(fragment, bill.getSummary().getMonthText(due_month));
                 }
             }
         }

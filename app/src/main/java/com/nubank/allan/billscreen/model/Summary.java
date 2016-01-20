@@ -37,14 +37,6 @@ public class Summary {
         return dueDate;
     }
 
-    public String getDueMonth(){
-        return (new SimpleDateFormat("MMM").format(dueDate.getTime())).toString();
-    }
-
-    public String getDueDayMonth(){
-        return (new SimpleDateFormat("dd MMM").format(dueDate.getTime())).toString();
-    }
-
     public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
     }
@@ -107,5 +99,15 @@ public class Summary {
 
     public void setOpenDate(Date openDate) {
         this.openDate = openDate;
+    }
+
+    public String getMonthText(Date date){
+        String s = (new SimpleDateFormat("MMM").format(date.getTime())).toString();
+        return s.toUpperCase();
+    }
+
+    public String getDayAndMonthText(Date date){
+        String s = (new SimpleDateFormat("dd MMM").format(date.getTime())).toString();
+        return s.toUpperCase();
     }
 }

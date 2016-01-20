@@ -1,24 +1,34 @@
 package com.nubank.allan.billscreen.controller;
 
 import android.app.Activity;
+import android.content.Context;
+import android.test.ActivityInstrumentationTestCase2;
 
+import com.google.dexmaker.DexMaker;
 import com.nubank.allan.billscreen.view.MainActivity;
 
 import junit.framework.Assert;
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.Before;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 /**
  * Created by doisl_000 on 1/16/2016.
  */
 public class HTTPConnectionHandlerTest extends TestCase {
+
+    private Activity main = new MainActivity();
+
     public void testExecute_returnsJSONArray_when_Called() throws ExecutionException, InterruptedException, JSONException {
-        MainActivity main = new MainActivity();
-        
         HTTPConnectionHandler async = new HTTPConnectionHandler(main);
         JSONArray returned = async.getJSONArrayData();
         JSONArray expected = new JSONArray("[\n" +

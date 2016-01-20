@@ -4,13 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Header -->
     <LinearLayout
         android:id="@+id/HeaderLayout"
-        android:padding="35dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Total Amount -->
         <TextView
             android:id="@+id/totalAmount"
             android:textColor="@color/white"
@@ -19,24 +22,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
+        <!-- Due Date -->
         <TextView
             android:id="@+id/dueDate"
-            android:textColor="@color/white"
+            android:textColor="@color/softgrey"
             android:textSize="15dp"
             android:textAlignment="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
+        <!-- Closed Date -->
         <TextView
             android:id="@+id/closeDate"
-            android:textColor="@color/white"
-            android:textSize="15dp"
+            android:textColor="@color/softgrey"
+            android:textSize="12dp"
             android:textAlignment="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
     </LinearLayout>
 
+    <!-- Header Details -->
     <LinearLayout
         android:id="@+id/HeaderDetails"
         android:padding="20dp"
@@ -46,20 +52,189 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Bill Overdue -->
+        <LinearLayout
+            android:id="@+id/OverdueDetails"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:text="PAGAMENTO RECEBIDO"
+                android:gravity="center"
+                android:textColor="@color/softgreen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/paidText"
+                android:gravity="center"
+                android:textSize="25dp"
+                android:layout_width="match_parent"
+                android:textColor="@color/softgreen"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <!-- Bill Closed -->
+        <LinearLayout
+            android:id="@+id/ClosedDetails"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <TableLayout
+                android:id="@+id/ClosedDetailsTable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="1"
+                android:layout_marginBottom="10dp">
+
+                <TableRow
+                    android:id="@+id/monthlyExpensesRow"
+                    android:visibility="gone"
+                    android:layout_marginBottom="5dp">
+
+                    <TextView
+                        android:text="Gastos do mês"/>
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:gravity="right"
+                        android:id="@+id/monthlyExpensesText"/>
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/notPaidRow"
+                    android:visibility="gone"
+                    android:layout_marginBottom="5dp">
+
+                    <TextView
+                        android:text="Valores não pagos"/>
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:gravity="right"
+                        android:id="@+id/notPaidText"/>
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/prePaidRow"
+                    android:visibility="gone"
+                    android:layout_marginBottom="5dp">
+
+                    <TextView
+                        android:text="Valores pré-pagos"/>
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:gravity="right"
+                        android:id="@+id/prePaidText"/>
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/interestRow"
+                    android:visibility="gone"
+                    android:layout_marginBottom="5dp">
+
+                    <TextView
+                        android:text="Juros 7,75%"/>
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:gravity="right"
+                        android:id="@+id/interestText"/>
+                </TableRow>
+
+            </TableLayout>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/billclosed_button"
+                android:text="GERAR BOLETO"
+                android:textColor="@color/softred"/>
+
+        </LinearLayout>
+
+        <!-- Bill Open -->
+        <LinearLayout
+            android:id="@+id/OpenDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/softblue"
+                android:background="@drawable/billopen_button"
+                android:text="GERAR BOLETO"/>
+
+        </LinearLayout>
+
+
     </LinearLayout>
 
+    <!-- Separator -->
+    <View
+        android:id="@+id/Separator"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/HeaderDetails"
+        android:background="@android:color/darker_gray"/>
+
+    <!-- Table Header -->
+    <TableLayout
+        android:id="@+id/TableHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:shrinkColumns="1"
+        android:stretchColumns="1"
+        android:orientation="vertical"
+        android:layout_below="@+id/Separator">
+
+        <TableRow
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background"
+            android:clickable="false">
+
+            <TextView
+                android:id="@+id/DateRangeText"
+                android:padding="10dp"
+                android:textColor="@color/dot"/>
+
+            <TextView
+                android:text="VALORES EM R$"
+                android:padding="10dp"
+                android:gravity="right"
+                android:textAlignment="gravity"
+                android:textColor="@color/dot"/>
+
+        </TableRow>
+    </TableLayout>
+
+    <!-- Line Items -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/grey"
-        android:layout_below="@+id/HeaderDetails">
+        android:background="@color/background"
+        android:layout_below="@+id/TableHeader">
 
         <TableLayout
             android:id="@+id/LineItems"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:shrinkColumns="1"
-            android:stretchColumns="1"
+            android:shrinkColumns="0,1,3"
+            android:stretchColumns="2"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:orientation="vertical">
 
         </TableLayout>

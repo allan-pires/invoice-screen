@@ -1,17 +1,18 @@
 package com.nubank.allan.billscreen.view.fragment;
 
-import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.util.Log;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -23,16 +24,14 @@ import com.nubank.allan.billscreen.model.LineItem;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.util.Date;
 
 /**
  * Created by Allan on 13/01/2016.
  */
-public class MonthFragment extends Fragment {
+public class MonthFragment extends Fragment{
 
     private Bill bill;
 
@@ -50,15 +49,13 @@ public class MonthFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_month, container, false);
 
-
         if (getArguments() != null){
             try {
                 JSONObject obj = new JSONObject(getArguments().getString("jsonObject"));
                 JSONHandler jsonHandler = new JSONHandler(this.getActivity());
                 bill = jsonHandler.parseJSONObjectToBill(obj);
                 setLayout(view, bill);
-            }
-            catch (JSONException e) {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
@@ -68,98 +65,156 @@ public class MonthFragment extends Fragment {
 
     private void setLayout(View view, Bill bill){
 
+        Date due_date = bill.getSummary().getDueDate();
+        Date close_date = bill.getSummary().getCloseDate();
+        Date open_date = bill.getSummary().getOpenDate();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(bill.getSummary().getDayAndMonthText(open_date));
+        sb.append(" ATÉ ");
+        sb.append(bill.getSummary().getDayAndMonthText(close_date));
+
+        ((TextView) view.findViewById(R.id.DateRangeText)).setText(sb.toString());
         ((TextView) view.findViewById(R.id.totalAmount)).setText(DecimalFormat.getCurrencyInstance().format(bill.getSummary().getTotalBalance()));
-        ((TextView) view.findViewById(R.id.dueDate)).setText("Vencimento " + (bill.getSummary().getDueDayMonth()));
+        ((TextView) view.findViewById(R.id.dueDate)).setText("Vencimento " + (bill.getSummary().getDayAndMonthText(due_date)));
+
 
         String state = bill.getState();
 
         switch (state){
             case "overdue" :
-                setOverdueLayout(view, bill);
+                setupOverdueLayout(view, bill);
                 break;
             case "closed" :
-                setClosedLayout(view, bill);
+                setupClosedLayout(view, bill);
                 break;
             case "open" :
-                setOpenLayout(view, bill);
+                setupOpenLayout(view, bill);
                 break;
             case "future" :
-                setFutureLayout(view, bill);
+                setupFutureLayout(view, bill);
                 break;
         }
 
         int size = bill.getItems().size();
         TableLayout table = (TableLayout) view.findViewById(R.id.LineItems);
-        for(int i = 0; i < size; i++){
+
+        for(int i = size-1; i >= 0; i--){
             LineItem item = bill.getItems().get(i);
-            addLineItem(table, item.getPostDateDayMonth(), item.getTitle(), item.getAmount());
+            addLineItem(table, item.getPostDateDayMonth(), item.getTitle(), item.getAmount(), item.getIndex(),item.getCharges());
         }
     }
 
-    private void setOverdueLayout(View view, Bill bill) {
+    private void setupOverdueLayout(View view, Bill bill) {
         view.findViewById(R.id.HeaderLayout).setBackgroundColor(Color.rgb(126, 211, 33));
-        LinearLayout headerDetails = (LinearLayout) view.findViewById(R.id.HeaderDetails);
 
-        TextView recieved_value = new TextView(headerDetails.getContext());
-        recieved_value.setText("PAGAMENTO RECEBIDO\n" + DecimalFormat.getCurrencyInstance().format(bill.getSummary().getPaid()));
+        // Show “PAGAMENTO RECEBIDO” if paid ​is negative.
+        if (bill.getSummary().getPaid() < 0){
+            LinearLayout overdueDetails = (LinearLayout) view.findViewById(R.id.OverdueDetails);
+            overdueDetails.setVisibility(View.VISIBLE);
+            TextView paidText = (TextView) view.findViewById(R.id.paidText);
+            paidText.setText(DecimalFormat.getCurrencyInstance().format(bill.getSummary().getPaid()));
+        }
+        else{
+            view.findViewById(R.id.HeaderDetails).setVisibility(View.GONE);
+            view.findViewById(R.id.Separator).setVisibility(View.GONE);
+        }
 
-        headerDetails.addView(recieved_value);
     }
 
-    private void setClosedLayout(View view, Bill bill) {
-        double total = bill.getSummary().getTotalBalance();
-        double temp = bill.getSummary().getTotalCumulative();
+    private void setupClosedLayout(View view, Bill bill) {
+        double totalBalance = bill.getSummary().getTotalBalance();
+        double totalCumulative = bill.getSummary().getTotalCumulative();
+        double pastBalance = bill.getSummary().getPastBalance();
+        double interest = bill.getSummary().getInterest();
+
         view.findViewById(R.id.HeaderLayout).setBackgroundColor(Color.rgb(229, 97, 92));
         LinearLayout headerDetails = (LinearLayout) view.findViewById(R.id.HeaderDetails);
 
-        TextView monthly_expenses = new TextView(headerDetails.getContext());
-        monthly_expenses.setText("Gastos do mês " + DecimalFormat.getCurrencyInstance().format(temp));
+        LinearLayout closedDetails = (LinearLayout) view.findViewById(R.id.ClosedDetails);
+        closedDetails.setVisibility(View.VISIBLE);
 
-        TextView not_paid = new TextView(headerDetails.getContext());
-        not_paid.setText("Valores não pagos " + DecimalFormat.getCurrencyInstance().format(total - temp));
+        TextView temp;
+        TableRow rowtemp;
 
-        TextView interest = new TextView(headerDetails.getContext());
-        double interest_double = bill.getSummary().getInterest();
-        interest.setText("Juros "+ bill.getSummary().getInterest() + DecimalFormat.getCurrencyInstance().format(temp * interest_double));
+        // “Gastos do mês” - total_cumulative (Only if it’s greater than 0)
+        if (totalCumulative > 0){
+            temp = (TextView) view.findViewById(R.id.monthlyExpensesText);
+            temp.setText(DecimalFormat.getCurrencyInstance().format(totalCumulative));
+            rowtemp = (TableRow) view.findViewById(R.id.monthlyExpensesRow);
+            rowtemp.setVisibility(View.VISIBLE);
+        }
 
-        Button generate_billet = new Button(headerDetails.getContext());
-        generate_billet.setText("GERAR BOLETO");
+        // “Valores não pagos” - past_balance (Only if it’s greater than 0)
+        if (pastBalance > 0){
+            temp = (TextView) view.findViewById(R.id.notPaidText);
+            temp.setText(DecimalFormat.getCurrencyInstance().format(pastBalance));
+            rowtemp = (TableRow) view.findViewById(R.id.notPaidRow);
+            rowtemp.setVisibility(View.VISIBLE);
+        }
 
-        headerDetails.addView(monthly_expenses);
-        headerDetails.addView(not_paid);
-        headerDetails.addView(interest);
-        headerDetails.addView(generate_billet);
+        // “Valores pré-pago” - past_balance (Only if it’s less than 0)
+        if (pastBalance < 0){
+            temp = (TextView) view.findViewById(R.id.prePaidText);
+            temp.setText(DecimalFormat.getCurrencyInstance().format(pastBalance));
+            rowtemp = (TableRow) view.findViewById(R.id.prePaidRow);
+            rowtemp.setVisibility(View.VISIBLE);
+        }
+
+        // “Juros 7,75%” - interest (Only if it’s greater than 0)
+        if (interest > 0){
+            temp = (TextView) view.findViewById(R.id.interestText);
+            temp.setText(DecimalFormat.getCurrencyInstance().format(interest));
+            rowtemp = (TableRow) view.findViewById(R.id.interestRow);
+            rowtemp.setVisibility(View.VISIBLE);
+        }
     }
 
-    private void setOpenLayout(View view, Bill bill) {
-        view.findViewById(R.id.HeaderLayout).setBackgroundColor(Color.rgb(64,170,185));
-        ((TextView) view.findViewById(R.id.closeDate)).setText("Fechamento em " + (bill.getSummary().getDueDayMonth()));
+    private void setupOpenLayout(View view, Bill bill) {
+        view.findViewById(R.id.HeaderLayout).setBackgroundColor(Color.rgb(64, 170, 185));
+        Date date = bill.getSummary().getCloseDate();
+        ((TextView) view.findViewById(R.id.closeDate)).setText("Fechamento em " + bill.getSummary().getDayAndMonthText(date));
 
-        LinearLayout headerDetails = (LinearLayout) view.findViewById(R.id.HeaderDetails);
-
-        Button generate_billet = new Button(headerDetails.getContext());
-        generate_billet.setText("GERAR BOLETO");
-        headerDetails.addView(generate_billet);
+        LinearLayout openDetails = (LinearLayout) view.findViewById(R.id.OpenDetails);
+        openDetails.setVisibility(View.VISIBLE);
     }
 
-    private void setFutureLayout(View view, Bill bill) {
+    private void setupFutureLayout(View view, Bill bill) {
         view.findViewById(R.id.HeaderLayout).setBackgroundColor(Color.rgb(245, 166, 35));
-        ((TextView) view.findViewById(R.id.dueDate)).setText("FATURA PARCIAL");
+        ((TextView) view.findViewById(R.id.closeDate)).setText("FATURA PARCIAL");
 
         view.findViewById(R.id.HeaderDetails).setVisibility(View.GONE);
+        view.findViewById(R.id.Separator).setVisibility(View.GONE);
     }
 
-    private void addLineItem(TableLayout table, String date, String place, double value){
+    private void addLineItem(TableLayout table, String date, String place, double value, int index, int charges){
             final TableRow tr = (TableRow) getLayoutInflater(new Bundle()).inflate(R.layout.line_item, null);
 
             TextView text;
+            StringBuilder place_truncated = new StringBuilder();
 
             // Fill out our cells
             text = (TextView) tr.findViewById(R.id.itemDate);
-            text.setText(date);
+            text.setText(date.toUpperCase());
 
             text = (TextView) tr.findViewById(R.id.itemPlace);
-            text.setText(place);
+
+            if (place.length() > 28){
+                place_truncated.append(place.substring(0, 30));
+                place_truncated.append("...");
+            }
+            else{
+                place_truncated.append(place);
+            }
+
+            if(charges > 1){
+                place_truncated.append(" ");
+                place_truncated.append(index+1);
+                place_truncated.append("/");
+                place_truncated.append(charges);
+            }
+
+            text.setText(place_truncated);
 
             text = (TextView) tr.findViewById(R.id.itemValue);
             text.setText(String.format("%10.2f", Math.abs(value)));
