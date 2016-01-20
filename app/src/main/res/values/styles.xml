@@ -11,4 +11,10 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="PagerTabStripText">
+        <item name="android:textSize">15dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#a4c639</item>
+    </style>
+
 </resources>

@@ -1,18 +1,12 @@
 package com.nubank.allan.billscreen.view.fragment;
 
-import android.app.FragmentTransaction;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -34,6 +28,7 @@ import java.util.Date;
 public class MonthFragment extends Fragment{
 
     private Bill bill;
+    private int count;
 
     // Static constructor
     public static MonthFragment newInstance(Bundle b) {
@@ -54,6 +49,7 @@ public class MonthFragment extends Fragment{
                 JSONObject obj = new JSONObject(getArguments().getString("jsonObject"));
                 JSONHandler jsonHandler = new JSONHandler(this.getActivity());
                 bill = jsonHandler.parseJSONObjectToBill(obj);
+                count = getArguments().getInt("count");
                 setLayout(view, bill);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -77,7 +73,6 @@ public class MonthFragment extends Fragment{
         ((TextView) view.findViewById(R.id.DateRangeText)).setText(sb.toString());
         ((TextView) view.findViewById(R.id.totalAmount)).setText(DecimalFormat.getCurrencyInstance().format(bill.getSummary().getTotalBalance()));
         ((TextView) view.findViewById(R.id.dueDate)).setText("Vencimento " + (bill.getSummary().getDayAndMonthText(due_date)));
-
 
         String state = bill.getState();
 
@@ -217,7 +212,11 @@ public class MonthFragment extends Fragment{
             text.setText(place_truncated);
 
             text = (TextView) tr.findViewById(R.id.itemValue);
-            text.setText(String.format("%10.2f", Math.abs(value)));
+            text.setText(String.format("%10.2f", value));
+            if (value < 0){
+                text.setTextColor(getResources().getColor(R.color.softgreen));
+                ((TextView) tr.findViewById(R.id.itemPlace)).setTextColor(getResources().getColor(R.color.softgreen));
+            }
             table.addView(tr);
     }
 }

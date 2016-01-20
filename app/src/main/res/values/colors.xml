@@ -26,5 +26,6 @@
     <color name="background">#f7f7f7</color>
     <color name="dot">#cccccc</color>
     <color name="text">#a5a5a5</color>
+    <color name="transparent">#00FFFFFF</color>
 
 </resources>
