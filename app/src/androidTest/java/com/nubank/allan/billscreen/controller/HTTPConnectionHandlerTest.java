@@ -1,35 +1,43 @@
 package com.nubank.allan.billscreen.controller;
 
-import android.app.Activity;
 import android.content.Context;
-import android.test.ActivityInstrumentationTestCase2;
+import android.test.InstrumentationTestCase;
 
-import com.google.dexmaker.DexMaker;
 import com.nubank.allan.billscreen.view.MainActivity;
 
 import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.junit.Before;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 /**
  * Created by doisl_000 on 1/16/2016.
  */
-public class HTTPConnectionHandlerTest extends TestCase {
+public class HTTPConnectionHandlerTest extends InstrumentationTestCase {
 
-    private Activity main = new MainActivity();
+    Context context;
+    MainActivity main;
+    HTTPConnectionHandler async;
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        System.setProperty(
+                "dexmaker.dexcache",
+                getInstrumentation().getTargetContext().getCacheDir().getPath());
+        context = Mockito.mock(Context.class);
+        main = Mockito.mock(MainActivity.class);
+        async = Mockito.mock(HTTPConnectionHandler.class);
+    }
 
     public void testExecute_returnsJSONArray_when_Called() throws ExecutionException, InterruptedException, JSONException {
-        HTTPConnectionHandler async = new HTTPConnectionHandler(main);
+        Mockito.when(main.getApplicationContext()).thenReturn(context);
+        Mockito.when(async.getJSONArrayData()).thenCallRealMethod();
+        Mockito.when(async.isConnectedToInternet()).thenReturn(true);
+
         JSONArray returned = async.getJSONArrayData();
         JSONArray expected = new JSONArray("[\n" +
                 "  {\n" +
@@ -426,5 +434,13 @@ public class HTTPConnectionHandlerTest extends TestCase {
         Assert.assertEquals(expected.getString(1), returned.getString(1));
         Assert.assertEquals(expected.getString(2), returned.getString(2));
         Assert.assertEquals(expected.getString(3), returned.getString(3));
+    }
+
+    public void testIsConnectedToInternet() throws Exception {
+
+    }
+
+    public void testGetJSONArrayData() throws Exception {
+
     }
 }

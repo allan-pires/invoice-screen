@@ -1,9 +1,15 @@
 package com.nubank.allan.billscreen.controller;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ImageSpan;
+
+import com.nubank.allan.billscreen.R;
 
 import java.util.ArrayList;
 import java.util.List;

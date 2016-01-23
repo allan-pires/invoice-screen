@@ -246,12 +246,12 @@
 
         <View
             android:layout_width="1dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="13dp"
+            android:layout_alignTop="@id/ScrollViewLineItems"
+            android:layout_alignBottom="@id/ScrollViewLineItems"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="25dp"
-            android:layout_alignTop="@+id/ScrollViewLineItems"
-            android:layout_alignBottom="@+id/ScrollViewLineItems"
+            android:paddingBottom="23dp"
             android:background="@color/dot" />
 
     </RelativeLayout>

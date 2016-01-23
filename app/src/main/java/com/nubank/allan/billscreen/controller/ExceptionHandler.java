@@ -13,10 +13,12 @@ public class ExceptionHandler {
 
     public Activity owner;
 
+    // Constructor
     public ExceptionHandler(Activity owner) {
         this.owner = owner;
     }
 
+    // Shows ErrorActivity and display the corresponding error message
     public void showErrorActivity(Context context, String code){
         String extra = getMessageFromCode(code);
         Intent intent = new Intent(context, ErrorActivity.class);
@@ -26,6 +28,7 @@ public class ExceptionHandler {
         owner.finish();
     }
 
+    // Returns error messages by code
     public String getMessageFromCode(String code){
         switch (code.charAt(0)){
             case 'N': return "Parece que você está sem internet!\nPor favor, verifique a sua conexão e tente novamente.";

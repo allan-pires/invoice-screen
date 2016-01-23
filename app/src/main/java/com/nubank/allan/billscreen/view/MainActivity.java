@@ -3,6 +3,7 @@ package com.nubank.allan.billscreen.view;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.nubank.allan.billscreen.controller.HTTPConnectionHandler;
 import com.nubank.allan.billscreen.controller.JSONHandler;
 import com.nubank.allan.billscreen.controller.ViewPagerAdapter;
 import com.nubank.allan.billscreen.model.Bill;
+import com.nubank.allan.billscreen.model.Summary;
 import com.nubank.allan.billscreen.view.fragment.MonthFragment;
 
 import org.json.JSONArray;
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity{
 
         // Sets up the Tabs
         tabs = (TabLayout) findViewById(R.id.tab_layout);
-
+        tabs.setupWithViewPager(viewPager);
         setupTabsLayout(tabs);
     }
 
@@ -54,15 +56,18 @@ public class MainActivity extends AppCompatActivity{
 
         try {
             if (jsonArray != null){
+
+                // Foreach Bill (JSONObject) in JSONArray
                 int size = jsonArray.length();
                 for(int i = 0; i < size; i++){
                     Bill bill = jsonHandler.parseJSONObjectToBill((JSONObject) jsonArray.get(i));
-                    Bundle bundle = new Bundle();
 
+                    // Creates a bundle with the JSONObject and put it in a new MonthFragment
+                    Bundle bundle = new Bundle();
                     bundle.putString("jsonObject", jsonArray.get(i).toString());
-                    bundle.putInt("count", i);
                     MonthFragment fragment = MonthFragment.newInstance(bundle);
 
+                    // Adds the fragment to the adapter
                     Date due_month = bill.getSummary().getDueDate();
                     adapter.addFragment(fragment, bill.getSummary().getMonthText(due_month));
                     bills.add(bill);
@@ -86,16 +91,14 @@ public class MainActivity extends AppCompatActivity{
             TabLayout.Tab tab = tabs.getTabAt(i);
 
             if (tab != null){
-                // Get the corresponding bill
-                Bill bill = bills.get(i);
-                String state = bill.getState();
-                Date date = bill.getSummary().getOpenDate();
+                String state = bills.get(i).getState();
+                Date date = bills.get(i).getSummary().getOpenDate();
 
                 // Inflate the custom view
                 View view = getLayoutInflater().inflate(R.layout.custom_view_tab, null);
                 TextView tab_title = (TextView) view.findViewById(R.id.tabTitle);
                 View tab_selector = view.findViewById(R.id.tabSelector);
-                tab_title.setText(bill.getSummary().getMonthText(date));
+                tab_title.setText(Summary.getMonthText(date));
 
                 // Set the corresponding color
                 switch (state){
@@ -136,10 +139,12 @@ public class MainActivity extends AppCompatActivity{
             public void onTabSelected(TabLayout.Tab tab) {
                 View view = tab.getCustomView();
                 TextView tab_title = (TextView) view.findViewById(R.id.tabTitle);
+                View selector = view.findViewById(R.id.tabSelector);
+
                 tab_title.setTextSize(20);
                 tab_title.setGravity(View.TEXT_ALIGNMENT_CENTER);
-                view.findViewById(R.id.tabSelector).setVisibility(View.VISIBLE);
-                tab.setCustomView(view);
+                selector.setVisibility(View.VISIBLE);
+
                 viewPager.setCurrentItem(tab.getPosition());
             }
 
@@ -148,9 +153,10 @@ public class MainActivity extends AppCompatActivity{
             public void onTabUnselected(TabLayout.Tab tab) {
                 View view = tab.getCustomView();
                 TextView tab_title = (TextView) view.findViewById(R.id.tabTitle);
+                View selector = view.findViewById(R.id.tabSelector);
+
                 tab_title.setTextSize(15);
-                view.findViewById(R.id.tabSelector).setVisibility(View.GONE);
-                tab.setCustomView(view);
+                selector.setVisibility(View.GONE);
             }
 
             @Override

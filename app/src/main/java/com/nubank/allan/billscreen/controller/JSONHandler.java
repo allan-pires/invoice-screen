@@ -191,19 +191,4 @@ public class JSONHandler {
 
         return bill;
     }
-
-    // Do all the stuff from up
-    public ArrayList<Bill> getBillsFromUrl() throws JSONException, ParseException {
-        ArrayList<Bill> bills = new ArrayList<>();
-        HTTPConnectionHandler httpHander = new HTTPConnectionHandler(owner);
-        JSONArray jArray = httpHander.getJSONArrayData();
-
-        int size = jArray.length();
-        for (int i = 0; i < size; i++){
-            JSONObject jObject = (JSONObject) jArray.get(i);
-            bills.add(parseJSONObjectToBill(jObject));
-        }
-
-        return bills;
-    }
 }

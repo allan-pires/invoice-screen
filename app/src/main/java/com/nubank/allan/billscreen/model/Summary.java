@@ -101,12 +101,12 @@ public class Summary {
         this.openDate = openDate;
     }
 
-    public String getMonthText(Date date){
+    public static String getMonthText(Date date){
         String s = (new SimpleDateFormat("MMM").format(date.getTime())).toString();
         return s.toUpperCase();
     }
 
-    public String getDayAndMonthText(Date date){
+    public static String getDayAndMonthText(Date date){
         String s = (new SimpleDateFormat("dd MMM").format(date.getTime())).toString();
         return s.toUpperCase();
     }

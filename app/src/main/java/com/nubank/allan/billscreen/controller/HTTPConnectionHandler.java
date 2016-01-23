@@ -28,11 +28,13 @@ public class HTTPConnectionHandler {
     private static ExceptionHandler exceptionHandler;
     private Activity owner;
 
+    // Constructor
     public HTTPConnectionHandler(Activity owner) {
         this.owner = owner;
         this.exceptionHandler = new ExceptionHandler(owner);
     }
 
+    // Checks if the device has connection with internet
     public boolean isConnectedToInternet() {
         ConnectivityManager connectivity = (ConnectivityManager) owner.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity != null) {
@@ -47,11 +49,14 @@ public class HTTPConnectionHandler {
         return false;
     }
 
+    // Gets a JSONArray from the Webservice
     public JSONArray getJSONArrayData() {
 
-        // try parse the string to a JSON object
+        // If has internet
         if (isConnectedToInternet()) {
             try {
+
+                // Get the data
                 ConsumeREST rest = new ConsumeREST(owner);
                 AsyncResult data = rest.execute(WEBSERVICE_URL).get();
                 if (data.getCode() != 200){
@@ -76,6 +81,7 @@ public class HTTPConnectionHandler {
         return response;
     }
 
+    // Result class for async task, returns the data and the code of the transaction
     class AsyncResult {
         private String result;
         private int code;
@@ -94,6 +100,7 @@ public class HTTPConnectionHandler {
         }
     }
 
+    // Async task that consumes the REST API and gets the data
     class ConsumeREST extends AsyncTask<String, String, AsyncResult> {
 
         private Activity parent;
@@ -109,11 +116,16 @@ public class HTTPConnectionHandler {
             // Consume REST API to get the JSON
             String url_string = params[0];
             StringBuilder sb = new StringBuilder();
+
+            // Code 200 = OK
             int statusCode = 200;
 
             try {
+                // Try to open a connection
                 URL url = new URL(url_string);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                // Refresh the status code
                 statusCode = connection.getResponseCode();
 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
