@@ -3,7 +3,8 @@
     <string name="error_name">ErrorScreen</string>
     <string name="action_settings">Settings</string>
     <string name="ops">OOPS, algo deu errado!</string>
-    <string name="no_connection">Sem internet, por favor verifique sua conexão :(</string>
-    <string name="ok">Ok, I will.</string>
-    <string name="error">Ele está morto, Jim!</string>
+    <string name="err_no_connection">Parece que você está sem internet! Por favor, verifique a sua conexão e tente novamente.</string>
+    <string name="err_4xx">Houve algum erro com o seu pedido.</string>
+    <string name="err_5xx">Desculpe, estamos enfrentando problemas técnicos. Por favor, tente novamente mais tarde.</string>
+    <string name="err_default_message">Desculpe, ocorreu algum problema. Por favor, tente novamente mais tarde.</string>
 </resources>

@@ -3,7 +3,10 @@ package com.nubank.allan.billscreen.controller;
 import android.content.Context;
 import android.test.InstrumentationTestCase;
 
-import com.nubank.allan.billscreen.view.MainActivity;
+import com.nubank.allan.billscreen.controller.handler.ExceptionHandler;
+import com.nubank.allan.billscreen.controller.handler.HTTPConnectionHandler;
+import com.nubank.allan.billscreen.controller.task.RESTTask;
+import com.nubank.allan.billscreen.controller.task.TaskResult;
 
 import junit.framework.Assert;
 
@@ -11,39 +14,41 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.mockito.Mockito;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.ExecutionException;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Matchers.notNull;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Created by doisl_000 on 1/16/2016.
  */
 public class HTTPConnectionHandlerTest extends InstrumentationTestCase {
 
-    Context context;
-    MainActivity main;
-    HTTPConnectionHandler async;
+    private HTTPConnectionHandler connectionHandler = Mockito.mock(HTTPConnectionHandler.class);
+    private RESTTask task = Mockito.mock(RESTTask.class);
+    private ExceptionHandler ex = Mockito.mock(ExceptionHandler.class);
+    private String WEBSERVICE_URL = "https://s3-sa-east-1.amazonaws.com/mobile-challenge/bill/bill_new.json";
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        System.setProperty(
-                "dexmaker.dexcache",
-                getInstrumentation().getTargetContext().getCacheDir().getPath());
-        context = Mockito.mock(Context.class);
-        main = Mockito.mock(MainActivity.class);
-        async = Mockito.mock(HTTPConnectionHandler.class);
+        System.setProperty("dexmaker.dexcache", getInstrumentation().getTargetContext().getCacheDir().getPath());
     }
 
-    public void testExecute_returnsJSONArray_when_Called() throws ExecutionException, InterruptedException, JSONException {
-        Mockito.when(main.getApplicationContext()).thenReturn(context);
-        Mockito.when(async.getJSONArrayData()).thenCallRealMethod();
-        Mockito.when(async.isConnectedToInternet()).thenReturn(true);
+    public void testGetJSONArrayData_returnsJSONArray_when_Called() throws ExecutionException, InterruptedException, JSONException, MalformedURLException {
 
-        JSONArray returned = async.getJSONArrayData();
         JSONArray expected = new JSONArray("[\n" +
                 "  {\n" +
                 "    \"bill\": {\n" +
                 "      \"state\": \"overdue\",\n" +
-                "      \"id\": \"55256cd0-10f7-4fd3-a3be-213bfe01857d\",\n" +
+                "      \"id\": \"55256cd0-10f7-4fd3-a3be-21" +
+                "3bfe01857d\",\n" +
                 "      \"summary\": {\n" +
                 "        \"due_date\": \"2015-04-20\",\n" +
                 "        \"close_date\": \"2015-04-07\",\n" +
@@ -430,17 +435,59 @@ public class HTTPConnectionHandlerTest extends InstrumentationTestCase {
                 "  }\n" +
                 "]\n");
 
+        URL url = new URL(WEBSERVICE_URL);
+        RESTTask task = new RESTTask();
+        Mockito.when(connectionHandler.getJSONArrayData()).thenCallRealMethod();
+        Mockito.when(connectionHandler.isConnectedToInternet()).thenReturn(true);
+        Mockito.when(connectionHandler.createURL()).thenReturn(url);
+        Mockito.when(connectionHandler.createTask()).thenReturn(task);
+        Mockito.when(connectionHandler.executeTask(task, url)).thenCallRealMethod();
+        JSONArray returned = connectionHandler.getJSONArrayData();
+
         Assert.assertEquals(expected.getString(0), returned.getString(0));
         Assert.assertEquals(expected.getString(1), returned.getString(1));
         Assert.assertEquals(expected.getString(2), returned.getString(2));
         Assert.assertEquals(expected.getString(3), returned.getString(3));
     }
 
-    public void testIsConnectedToInternet() throws Exception {
+    public void testGetJSONArrayData_showsErrorActivity_when_NoConnectionAvailable() throws NoSuchFieldException, IllegalAccessException, InstantiationException {
+        Mockito.when(connectionHandler.getJSONArrayData()).thenCallRealMethod();
+        Mockito.when(connectionHandler.isConnectedToInternet()).thenReturn(false);
+        Mockito.when(connectionHandler.createExceptionHandler()).thenReturn(ex);
 
+        connectionHandler.getJSONArrayData();
+        verify(connectionHandler, times(1)).isConnectedToInternet();
+        verify(connectionHandler, times(1)).createExceptionHandler();
+        verify(ex, times(1)).showErrorActivity(any(Context.class), eq("no_internet"));
     }
 
-    public void testGetJSONArrayData() throws Exception {
+    public void testGetJSONArrayData_showsErrorActivity_when_InvalidURL() throws Exception {
+        Mockito.when(connectionHandler.getJSONArrayData()).thenCallRealMethod();
+        Mockito.when(connectionHandler.isConnectedToInternet()).thenReturn(true);
+        Mockito.when(connectionHandler.createURL()).thenThrow(new MalformedURLException());
+        Mockito.when(connectionHandler.createExceptionHandler()).thenReturn(ex);
 
+        connectionHandler.getJSONArrayData();
+        verify(connectionHandler, times(1)).isConnectedToInternet();
+        verify(connectionHandler, times(1)).createExceptionHandler();
+        verify(ex, times(1)).showErrorActivity(any(Context.class), eq("bad_url"));
+    }
+
+    public void testGetJSONArrayData_showsErrorActivity_when_InvalidJSON() throws Exception {
+        TaskResult result = Mockito.mock(TaskResult.class);
+        URL url = new URL(WEBSERVICE_URL);
+        Mockito.when(connectionHandler.getJSONArrayData()).thenCallRealMethod();
+        Mockito.when(connectionHandler.isConnectedToInternet()).thenReturn(true);
+        Mockito.when(connectionHandler.createTask()).thenReturn(task);
+        Mockito.when(connectionHandler.createURL()).thenReturn(url);
+        Mockito.when(connectionHandler.executeTask(task, url)).thenReturn(result);
+        Mockito.when(result.getCode()).thenReturn(200);
+        Mockito.when(result.getResult()).thenReturn("&*()¨@#*&(");
+        Mockito.when(connectionHandler.createExceptionHandler()).thenReturn(ex);
+
+        connectionHandler.getJSONArrayData();
+        verify(connectionHandler, times(1)).isConnectedToInternet();
+        verify(connectionHandler, times(1)).createExceptionHandler();
+        verify(ex, times(1)).showErrorActivity(any(Context.class), eq("err_json"));
     }
 }

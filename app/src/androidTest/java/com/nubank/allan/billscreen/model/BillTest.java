@@ -1,9 +1,5 @@
 package com.nubank.allan.billscreen.model;
 
-import com.nubank.allan.billscreen.model.Bill;
-import com.nubank.allan.billscreen.model.LineItem;
-import com.nubank.allan.billscreen.model.Summary;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

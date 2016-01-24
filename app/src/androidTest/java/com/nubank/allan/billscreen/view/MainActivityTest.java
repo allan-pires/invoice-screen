@@ -1,47 +1,27 @@
 package com.nubank.allan.billscreen.view;
 
-import android.support.test.espresso.action.ViewActions;
+import android.support.test.rule.ActivityTestRule;
 import android.test.InstrumentationTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.nubank.allan.billscreen.R;
-import com.nubank.allan.billscreen.controller.ViewPagerAdapter;
-import com.nubank.allan.billscreen.model.LineItem;
 
-import org.hamcrest.Matchers;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import android.support.test.rule.ActivityTestRule;
-import android.view.View;
-import android.widget.ScrollView;
-import android.widget.TableRow;
-
-import junit.framework.TestCase;
-
-import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.scrollTo;
+import static android.support.test.espresso.action.ViewActions.swipeLeft;
+import static android.support.test.espresso.action.ViewActions.swipeRight;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.isFocusable;
 import static android.support.test.espresso.matcher.ViewMatchers.isSelected;
-import static android.support.test.espresso.matcher.ViewMatchers.withChild;
-import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.action.ViewActions.*;
-import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.anything;
-import static org.hamcrest.Matchers.hasToString;
 import static org.hamcrest.core.AllOf.allOf;
-import static org.hamcrest.core.IsInstanceOf.any;
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.mockito.Matchers.startsWith;
 
 /**
  * Created by doisl_000 on 1/22/2016.

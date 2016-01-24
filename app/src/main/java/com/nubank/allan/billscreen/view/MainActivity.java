@@ -3,17 +3,16 @@ package com.nubank.allan.billscreen.view;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
 import com.nubank.allan.billscreen.R;
-import com.nubank.allan.billscreen.controller.ExceptionHandler;
-import com.nubank.allan.billscreen.controller.HTTPConnectionHandler;
-import com.nubank.allan.billscreen.controller.JSONHandler;
-import com.nubank.allan.billscreen.controller.ViewPagerAdapter;
+import com.nubank.allan.billscreen.controller.handler.ExceptionHandler;
+import com.nubank.allan.billscreen.controller.handler.HTTPConnectionHandler;
+import com.nubank.allan.billscreen.controller.handler.JSONHandler;
+import com.nubank.allan.billscreen.controller.adapter.ViewPagerAdapter;
 import com.nubank.allan.billscreen.model.Bill;
 import com.nubank.allan.billscreen.model.Summary;
 import com.nubank.allan.billscreen.view.fragment.MonthFragment;
@@ -29,6 +28,7 @@ public class MainActivity extends AppCompatActivity{
 
     private TabLayout tabs;
     private ViewPager viewPager;
+    private ExceptionHandler ex = new ExceptionHandler();
     private ArrayList<Bill> bills = new ArrayList<>();
 
     @Override
@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity{
     private void setupViewPager(ViewPager vp){
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         HTTPConnectionHandler httpHandler = new HTTPConnectionHandler(this);
-        ExceptionHandler exceptionHandler = new ExceptionHandler(this);
         JSONHandler jsonHandler = new JSONHandler(this);
         JSONArray jsonArray = httpHandler.getJSONArrayData();
 
@@ -69,13 +68,13 @@ public class MainActivity extends AppCompatActivity{
 
                     // Adds the fragment to the adapter
                     Date due_month = bill.getSummary().getDueDate();
-                    adapter.addFragment(fragment, bill.getSummary().getMonthText(due_month));
+                    adapter.addFragment(fragment, Summary.getMonthText(due_month));
                     bills.add(bill);
                 }
             }
         }
         catch (JSONException e) {
-            exceptionHandler.showErrorActivity(this, "err_json");
+            ex.showErrorActivity(this, "err_json");
         }
 
         vp.setAdapter(adapter);

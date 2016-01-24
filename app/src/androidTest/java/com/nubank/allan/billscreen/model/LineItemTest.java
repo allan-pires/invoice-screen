@@ -1,7 +1,5 @@
 package com.nubank.allan.billscreen.model;
 
-import com.nubank.allan.billscreen.model.LineItem;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -37,7 +35,7 @@ public class LineItemTest extends TestCase{
         item.setPostDate(postDate);
 
         Assert.assertEquals(new Date(2016, 12, 12), item.getPostDate());
-    };
+    }
 
     public void testSetTitle_setsTitle_whenCalled(){
         String title = "linha";
@@ -46,7 +44,7 @@ public class LineItemTest extends TestCase{
         item.setTitle(title);
 
         Assert.assertEquals("linha", item.getTitle());
-    };
+    }
 
     public void testSetHref_setsHref_whenCalled(){
         String href = "http://linha.com";
@@ -55,7 +53,8 @@ public class LineItemTest extends TestCase{
         item.setHref(href);
 
         Assert.assertEquals("http://linha.com", item.getHref());
-    };
+    }
+
     public void testSetIndex_setsIndex_whenCalled(){
         int index = 1;
 
@@ -63,7 +62,7 @@ public class LineItemTest extends TestCase{
         item.setIndex(index);
 
         Assert.assertEquals(1, item.getIndex());
-    };
+    }
 
     public void testSetCharges_setsCharges_whenCalled(){
         int charges = 2;
@@ -72,7 +71,7 @@ public class LineItemTest extends TestCase{
         item.setCharges(charges);
 
         Assert.assertEquals(2, item.getCharges());
-    };
+    }
 
     public void testSetAmount_setsAmount_whenCalled(){
         double amount = 220.0;
@@ -81,6 +80,6 @@ public class LineItemTest extends TestCase{
         item.setAmount(amount);
 
         Assert.assertEquals(220.0, item.getAmount());
-    };
+    }
 
 }

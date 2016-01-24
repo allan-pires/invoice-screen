@@ -12,9 +12,10 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.nubank.allan.billscreen.R;
-import com.nubank.allan.billscreen.controller.JSONHandler;
+import com.nubank.allan.billscreen.controller.handler.JSONHandler;
 import com.nubank.allan.billscreen.model.Bill;
 import com.nubank.allan.billscreen.model.LineItem;
+import com.nubank.allan.billscreen.model.Summary;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,13 +67,13 @@ public class MonthFragment extends Fragment{
         Date open_date = bill.getSummary().getOpenDate();
 
         StringBuilder sb = new StringBuilder();
-        sb.append(bill.getSummary().getDayAndMonthText(open_date));
+        sb.append(Summary.getDayAndMonthText(open_date));
         sb.append(" ATÉ ");
-        sb.append(bill.getSummary().getDayAndMonthText(close_date));
+        sb.append(Summary.getDayAndMonthText(close_date));
 
         ((TextView) view.findViewById(R.id.DateRangeText)).setText(sb.toString());
         ((TextView) view.findViewById(R.id.totalAmount)).setText(DecimalFormat.getCurrencyInstance().format(bill.getSummary().getTotalBalance()));
-        ((TextView) view.findViewById(R.id.dueDate)).setText("Vencimento " + (bill.getSummary().getDayAndMonthText(due_date)));
+        ((TextView) view.findViewById(R.id.dueDate)).setText("Vencimento " + (Summary.getDayAndMonthText(due_date)));
 
         String state = bill.getState();
 
@@ -168,7 +169,7 @@ public class MonthFragment extends Fragment{
     private void setupOpenLayout(View view, Bill bill) {
         view.findViewById(R.id.HeaderLayout).setBackgroundColor(Color.rgb(64, 170, 185));
         Date date = bill.getSummary().getCloseDate();
-        ((TextView) view.findViewById(R.id.closeDate)).setText("Fechamento em " + bill.getSummary().getDayAndMonthText(date));
+        ((TextView) view.findViewById(R.id.closeDate)).setText("Fechamento em " + Summary.getDayAndMonthText(date));
 
         LinearLayout openDetails = (LinearLayout) view.findViewById(R.id.OpenDetails);
         openDetails.setVisibility(View.VISIBLE);

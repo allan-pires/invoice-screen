@@ -1,7 +1,6 @@
 package com.nubank.allan.billscreen.model;
 
 import junit.framework.Assert;
-import junit.framework.Test;
 import junit.framework.TestCase;
 
 import java.util.Date;
@@ -44,7 +43,7 @@ public class SummaryTest extends TestCase {
         summary.setDueDate(dueDate);
 
         Assert.assertEquals(new Date(2015,12,12), summary.getDueDate());
-    };
+    }
 
     public void testSetCloseDate_setsCloseDate_whenCalled(){
         Date closeDate = new Date(2015,12,30);
@@ -53,7 +52,7 @@ public class SummaryTest extends TestCase {
         summary.setCloseDate(closeDate);
 
         Assert.assertEquals(new Date(2015,12,30), summary.getCloseDate());
-    };
+    }
 
     public void testSetPastBalance_setsPastBalance_whenCalled(){
         double pastBalance = 123.0;
@@ -62,7 +61,7 @@ public class SummaryTest extends TestCase {
         summary.setPastBalance(pastBalance);
 
         Assert.assertEquals(123.0, summary.getPastBalance());
-    };
+    }
 
     public void testSetTotalBalance_setsTotalBalance_whenCalled(){
         double totalBalance = 456.0;
@@ -71,7 +70,7 @@ public class SummaryTest extends TestCase {
         summary.setTotalBalance(totalBalance);
 
         Assert.assertEquals(456.0, summary.getTotalBalance());
-    };
+    }
 
     public void testSetInterest_setsInterest_whenCalled(){
         double interest = 789.0;
@@ -80,7 +79,7 @@ public class SummaryTest extends TestCase {
         summary.setInterest(interest);
 
         Assert.assertEquals(789.0, summary.getInterest());
-    };
+    }
 
     public void testSetTotalCumulative_setsTotalCumulative_whenCalled(){
         double totalCumulative = 12.0;
@@ -89,7 +88,7 @@ public class SummaryTest extends TestCase {
         summary.setTotalCumulative(totalCumulative);
 
         Assert.assertEquals(12.0, summary.getTotalCumulative());
-    };
+    }
 
     public void testSetPaid_setsPaid_whenCalled(){
         double paid = 135.0;
@@ -98,7 +97,7 @@ public class SummaryTest extends TestCase {
         summary.setPaid(paid);
 
         Assert.assertEquals(135.0, summary.getPaid());
-    };
+    }
 
     public void testSetMinPayment_setsMinPayment_whenCalled(){
         double minPayment = 567.0;
@@ -107,7 +106,7 @@ public class SummaryTest extends TestCase {
         summary.setMinPayment(minPayment);
 
         Assert.assertEquals(567.0, summary.getMinPayment());
-    };
+    }
 
     public void testSetOpenDate_setsOpenDate_whenCalled(){
         Date openDate = new Date(2015,12,1);
@@ -116,5 +115,5 @@ public class SummaryTest extends TestCase {
         summary.setOpenDate(openDate);
 
         Assert.assertEquals(new Date(2015,12,1), summary.getOpenDate());
-    };
+    }
 }
