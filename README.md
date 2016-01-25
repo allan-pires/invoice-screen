@@ -6,7 +6,7 @@ Customers from a bank have to pay their bill monthly. The bill have four potenti
 (ready for payment but not yet paid); “open” (not yet closed, charges are still being added); and “future” (installments, that will be charged to bills in future months).
 
 ## Class diagram
-![alt tag](http://i.imgur.com/jDT66Gp.jpg)
+![alt tag](http://i.imgur.com/YUCJ3cE.jpg?1)
 
 ## Relevant Files
 - [MainActivity](https://github.com/doisLan/BillScreen/blob/master/app/src/main/java/com/nubank/allan/billscreen/view/MainActivity.java): Main screen
