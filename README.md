@@ -1,10 +1,9 @@
 # BillScreen
+This app is a implementation of a Bill Screen. Developed with Android Studio + Gradle + JUnit + Mockito
 
 ## Description
 Customers from a bank have to pay their bill monthly. The bill have four potential states: “overdue” (paid); ”closed”
 (ready for payment but not yet paid); “open” (not yet closed, charges are still being added); and “future” (installments, that will be charged to bills in future months).
-This app is a implementation of the Bill Screen.
-Developed with Android Studio + Gradle + JUnit + Mockito
 
 ## Class diagram
 ![alt tag](http://i.imgur.com/jDT66Gp.jpg)
