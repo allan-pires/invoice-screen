@@ -6,7 +6,7 @@ Customers from a bank have to pay their bill monthly. The bill have four potenti
 (ready for payment but not yet paid); “open” (not yet closed, charges are still being added); and “future” (installments, that will be charged to bills in future months).
 
 ## Images
-![alt tag](http://i.imgur.com/hjVvKZb.png)
+![alt tag](http://i.imgur.com/XDA56Nu.png)
 
 ## Class diagram
 ![alt tag](http://i.imgur.com/YUCJ3cE.jpg?1)
