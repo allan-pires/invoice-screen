@@ -18,7 +18,7 @@ Customers from a bank have to pay their bill monthly. The bill have four potenti
 - [Bill](https://github.com/doisLan/BillScreen/blob/master/app/src/main/java/com/nubank/allan/billscreen/model/Bill.java): Model of a Bill
 - [Summary](https://github.com/doisLan/BillScreen/blob/master/app/src/main/java/com/nubank/allan/billscreen/model/Summary.java): Model of a Summary (component of the bill)
 - [LineItem](https://github.com/doisLan/BillScreen/blob/master/app/src/main/java/com/nubank/allan/billscreen/model/LineItem.java): Model of a LineItem (component of the bill)
-- [JSONHandler](https://github.com/doisLan/BillScreen/blob/master/app/src/main/java/com/nubank/allan/billscreen/controller/handler/HTTPConnectionHandler.java): Controller of JSONs requests
+- [JSONHandler](https://github.com/doisLan/BillScreen/blob/master/app/src/main/java/com/nubank/allan/billscreen/controller/handler/JSONHandler.java): Controller of JSONs requests
 - [HTTPConnectionHandler](https://github.com/doisLan/BillScreen/blob/master/app/src/main/java/com/nubank/allan/billscreen/controller/handler/HTTPConnectionHandler.java): Controller of connections to fetch data
 - [ExceptionHandler](https://github.com/doisLan/BillScreen/blob/master/app/src/main/java/com/nubank/allan/billscreen/controller/handler/ExceptionHandler.java): Controller of exceptions
 - [RESTTask](https://github.com/doisLan/BillScreen/blob/master/app/src/main/java/com/nubank/allan/billscreen/controller/task/RESTTask.java): Asynchronous task that consumes a REST API
