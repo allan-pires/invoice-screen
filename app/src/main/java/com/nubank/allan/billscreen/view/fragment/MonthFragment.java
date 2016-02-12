@@ -58,6 +58,7 @@ public class MonthFragment extends Fragment{
         return view;
     }
 
+    // Sets the layout of the fragment
     private void setLayout(View view, Bill bill){
 
         Date due_date = bill.getSummary().getDueDate();
@@ -75,6 +76,7 @@ public class MonthFragment extends Fragment{
 
         String state = bill.getState();
 
+        // Setups the header details by bill status
         switch (state){
             case "overdue" :
                 setupOverdueLayout(view, bill);
@@ -93,12 +95,14 @@ public class MonthFragment extends Fragment{
         int size = bill.getItems().size();
         TableLayout table = (TableLayout) view.findViewById(R.id.LineItems);
 
+        //Adds the line itens
         for(int i = size-1; i >= 0; i--){
             LineItem item = bill.getItems().get(i);
             addLineItem(table, item.getPostDateDayMonth(), item.getTitle(), item.getAmount(), item.getIndex(),item.getCharges());
         }
     }
 
+    // Configure the header details of an overdue bill
     private void setupOverdueLayout(View view, Bill bill) {
         view.findViewById(R.id.HeaderLayout).setBackgroundColor(Color.rgb(126, 211, 33));
 
@@ -116,12 +120,14 @@ public class MonthFragment extends Fragment{
 
     }
 
+    // Configure the header details of a closed bill
     private void setupClosedLayout(View view, Bill bill) {
         double totalBalance = bill.getSummary().getTotalBalance();
         double totalCumulative = bill.getSummary().getTotalCumulative();
         double pastBalance = bill.getSummary().getPastBalance();
         double interest = bill.getSummary().getInterest();
 
+        // Header color and text
         view.findViewById(R.id.HeaderLayout).setBackgroundColor(Color.rgb(229, 97, 92));
         LinearLayout headerDetails = (LinearLayout) view.findViewById(R.id.HeaderDetails);
 
@@ -164,23 +170,31 @@ public class MonthFragment extends Fragment{
         }
     }
 
+    // Configure the header details of an open bill
     private void setupOpenLayout(View view, Bill bill) {
+        // Header color and text
         view.findViewById(R.id.HeaderLayout).setBackgroundColor(Color.rgb(64, 170, 185));
         Date date = bill.getSummary().getCloseDate();
         ((TextView) view.findViewById(R.id.closeDate)).setText("Fechamento em " + Summary.getDayAndMonthText(date));
 
         LinearLayout openDetails = (LinearLayout) view.findViewById(R.id.OpenDetails);
+        
+        // Set the details visible
         openDetails.setVisibility(View.VISIBLE);
     }
 
+    // Configure the header details of a future bill
     private void setupFutureLayout(View view, Bill bill) {
+        // Header color and text
         view.findViewById(R.id.HeaderLayout).setBackgroundColor(Color.rgb(245, 166, 35));
         ((TextView) view.findViewById(R.id.closeDate)).setText("FATURA PARCIAL");
 
+        // Set separator and header details not visible
         view.findViewById(R.id.HeaderDetails).setVisibility(View.GONE);
         view.findViewById(R.id.Separator).setVisibility(View.GONE);
     }
 
+    // Add a row of LineItem
     private void addLineItem(TableLayout table, String date, String place, double value, int index, int charges){
             final TableRow tr = (TableRow) getLayoutInflater(new Bundle()).inflate(R.layout.line_item, null);
 
