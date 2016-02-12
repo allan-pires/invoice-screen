@@ -29,7 +29,6 @@ import java.util.Date;
 public class MonthFragment extends Fragment{
 
     private Bill bill;
-    private int count;
 
     // Static constructor
     public static MonthFragment newInstance(Bundle b) {
@@ -50,7 +49,6 @@ public class MonthFragment extends Fragment{
                 JSONObject obj = new JSONObject(getArguments().getString("jsonObject"));
                 JSONHandler jsonHandler = new JSONHandler(this.getActivity());
                 bill = jsonHandler.parseJSONObjectToBill(obj);
-                count = getArguments().getInt("count");
                 setLayout(view, bill);
             } catch (JSONException e) {
                 e.printStackTrace();

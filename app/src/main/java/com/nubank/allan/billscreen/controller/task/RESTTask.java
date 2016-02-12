@@ -2,11 +2,12 @@ package com.nubank.allan.billscreen.controller.task;
 
 import android.os.AsyncTask;
 
+import com.nubank.allan.billscreen.model.TaskResult;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**

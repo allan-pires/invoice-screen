@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.nubank.allan.billscreen.controller.task.*;
+import com.nubank.allan.billscreen.model.TaskResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,7 +60,8 @@ public class HTTPConnectionHandler {
                     ex.showErrorActivity(context, String.valueOf(data.getCode()));
                     return null;
                 }
-                response = new JSONArray(data.getResult());
+                String json = data.getResult();
+                response = getJSONArrayFromString(json);
             }
             catch (InterruptedException e) {
                 ex.showErrorActivity(context, "err_intexec");
@@ -90,6 +92,10 @@ public class HTTPConnectionHandler {
 
     public ExceptionHandler createExceptionHandler(){
         return new ExceptionHandler();
+    }
+
+    public JSONArray getJSONArrayFromString(String s) throws JSONException {
+        return new JSONArray(s);
     }
 
     public URL createURL() throws MalformedURLException {

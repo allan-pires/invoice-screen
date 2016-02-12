@@ -33,7 +33,7 @@ public class JSONHandler {
     }
 
     // Parses JSONObject -> Summary
-    private Summary parseJSONObjectToSummary(JSONObject summaryObject) throws JSONException, ParseException {
+    public Summary parseJSONObjectToSummary(JSONObject summaryObject) throws JSONException, ParseException {
 
         Summary summary = new Summary();
 
@@ -85,7 +85,7 @@ public class JSONHandler {
     }
 
     // Parses JSONObject -> ArrayList<LineItem>
-    private ArrayList<LineItem> parseJSONArrayToLineItem(JSONArray lineItemArray) throws JSONException, ParseException {
+    public ArrayList<LineItem> parseJSONArrayToLineItem(JSONArray lineItemArray) throws JSONException, ParseException {
 
         // Variables
         ArrayList<LineItem> lineItems = new ArrayList<>();
