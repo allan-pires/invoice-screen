@@ -1,6 +1,8 @@
 package com.nubank.allan.billscreen.controller.handler;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.test.InstrumentationTestCase;
 
 import com.nubank.allan.billscreen.controller.handler.ExceptionHandler;
@@ -36,6 +38,7 @@ import static org.mockito.Mockito.when;
 public class HTTPConnectionHandlerTest extends TestCase {
 
     private HTTPConnectionHandler connectionHandler;
+    private ConnectivityManager connectivityManager;
     private ExceptionHandler ex;
     private RESTTask task;
     private Context context;
@@ -50,6 +53,7 @@ public class HTTPConnectionHandlerTest extends TestCase {
         task =  Mockito.mock(RESTTask.class);
         ex = Mockito.mock(ExceptionHandler.class);
         connectionHandler = Mockito.mock(HTTPConnectionHandler.class);
+        connectivityManager = Mockito.mock(ConnectivityManager.class);
         url = new URL(WEBSERVICE_URL);
     }
 
@@ -73,7 +77,7 @@ public class HTTPConnectionHandlerTest extends TestCase {
         assertEquals(expected.get(3).toString(), returned.get(3).toString());
     }
 
-    public void testGetJSONArrayData_showsErrorActivity_when_NoConnectionAvailable() throws NoSuchFieldException, IllegalAccessException, InstantiationException {
+    public void testGetJSONArrayData_showsErrorActivity_whenNoConnectionAvailable() throws NoSuchFieldException, IllegalAccessException, InstantiationException {
         when(connectionHandler.getJSONArrayData()).thenCallRealMethod();
         when(connectionHandler.isConnectedToInternet()).thenReturn(false);
         when(connectionHandler.createExceptionHandler()).thenReturn(ex);
@@ -84,7 +88,7 @@ public class HTTPConnectionHandlerTest extends TestCase {
         verify(ex, times(1)).showErrorActivity(any(Context.class), eq("no_internet"));
     }
 
-    public void testGetJSONArrayData_showsErrorActivity_when_InvalidURL() throws Exception {
+    public void testGetJSONArrayData_showsErrorActivity_whenInvalidURL() throws Exception {
         when(connectionHandler.getJSONArrayData()).thenCallRealMethod();
         when(connectionHandler.isConnectedToInternet()).thenReturn(true);
         when(connectionHandler.createURL()).thenThrow(new MalformedURLException());
@@ -96,7 +100,7 @@ public class HTTPConnectionHandlerTest extends TestCase {
         verify(ex, times(1)).showErrorActivity(any(Context.class), eq("bad_url"));
     }
 
-    public void testGetJSONArrayData_showsErrorActivity_when_InvalidJSON() throws Exception {
+    public void testGetJSONArrayData_showsErrorActivity_whenInvalidJSON() throws Exception {
         TaskResult result = TaskResultFactory.createRealSucessTaskResultObject();
 
         when(connectionHandler.getJSONArrayData()).thenCallRealMethod();
@@ -111,6 +115,78 @@ public class HTTPConnectionHandlerTest extends TestCase {
         verify(connectionHandler, times(1)).isConnectedToInternet();
         verify(connectionHandler, times(1)).createExceptionHandler();
         verify(ex, times(1)).showErrorActivity(any(Context.class), eq("err_json"));
+    }
+
+    public void testGetJSONArrayData_showsErrorActivity_whenInterruptedException() throws Exception {
+        when(connectionHandler.getJSONArrayData()).thenCallRealMethod();
+        when(connectionHandler.isConnectedToInternet()).thenReturn(true);
+        when(connectionHandler.createTask()).thenReturn(task);
+        when(connectionHandler.createURL()).thenReturn(url);
+        when(connectionHandler.executeTask(task, url)).thenThrow(new InterruptedException());
+        when(connectionHandler.createExceptionHandler()).thenReturn(ex);
+
+        connectionHandler.getJSONArrayData();
+        verify(connectionHandler, times(1)).isConnectedToInternet();
+        verify(connectionHandler, times(1)).createExceptionHandler();
+        verify(ex, times(1)).showErrorActivity(any(Context.class), eq("err_intexec"));
+    }
+
+    public void testGetJSONArrayData_showsErrorActivity_whenErrorCode4xx() throws Exception {
+        TaskResult result = TaskResultFactory.create4xxTaskResultObject();
+        when(connectionHandler.getJSONArrayData()).thenCallRealMethod();
+        when(connectionHandler.isConnectedToInternet()).thenReturn(true);
+        when(connectionHandler.createTask()).thenReturn(task);
+        when(connectionHandler.createURL()).thenReturn(url);
+        when(connectionHandler.executeTask(task, url)).thenReturn(result);
+        when(connectionHandler.createExceptionHandler()).thenReturn(ex);
+
+        connectionHandler.getJSONArrayData();
+        verify(connectionHandler, times(1)).isConnectedToInternet();
+        verify(connectionHandler, times(1)).createExceptionHandler();
+        verify(ex, times(1)).showErrorActivity(any(Context.class), eq("404"));
+    }
+
+    public void testGetJSONArrayData_showsErrorActivity_whenErrorCode5xx() throws Exception {
+        TaskResult result = TaskResultFactory.create5xxTaskResultObject();
+        when(connectionHandler.getJSONArrayData()).thenCallRealMethod();
+        when(connectionHandler.isConnectedToInternet()).thenReturn(true);
+        when(connectionHandler.createTask()).thenReturn(task);
+        when(connectionHandler.createURL()).thenReturn(url);
+        when(connectionHandler.executeTask(task, url)).thenReturn(result);
+        when(connectionHandler.createExceptionHandler()).thenReturn(ex);
+
+        connectionHandler.getJSONArrayData();
+        verify(connectionHandler, times(1)).isConnectedToInternet();
+        verify(connectionHandler, times(1)).createExceptionHandler();
+        verify(ex, times(1)).showErrorActivity(any(Context.class), eq("503"));
+    }
+
+    public void testIsConnectedToInternet_returnsTrue_whenConnected() {
+        NetworkInfo netInfo = Mockito.mock(NetworkInfo.class);
+        NetworkInfo[] allInfo = new NetworkInfo[1];
+        allInfo[0] = netInfo;
+
+        when(connectionHandler.isConnectedToInternet()).thenCallRealMethod();
+        when(connectionHandler.getConnectivityService()).thenReturn(connectivityManager);
+        when(connectivityManager.getAllNetworkInfo()).thenReturn(allInfo);
+        when(netInfo.getState()).thenReturn(NetworkInfo.State.CONNECTED);
+
+        Boolean connected = connectionHandler.isConnectedToInternet();
+        assertEquals(true, connected.booleanValue());
+    }
+
+    public void testIsConnectedToInternet_returnsFalse_whenNotConnected() {
+        NetworkInfo netInfo = Mockito.mock(NetworkInfo.class);
+        NetworkInfo[] allInfo = new NetworkInfo[1];
+        allInfo[0] = netInfo;
+
+        when(connectionHandler.isConnectedToInternet()).thenCallRealMethod();
+        when(connectionHandler.getConnectivityService()).thenReturn(connectivityManager);
+        when(connectivityManager.getAllNetworkInfo()).thenReturn(allInfo);
+        when(netInfo.getState()).thenReturn(NetworkInfo.State.DISCONNECTED);
+
+        Boolean connected = connectionHandler.isConnectedToInternet();
+        assertEquals(false, connected.booleanValue());
     }
 
     public void testCreateTask_returnsRestTaskObject_whenCalled(){
@@ -143,5 +219,13 @@ public class HTTPConnectionHandlerTest extends TestCase {
         returned = connectionHandler.createURL();
 
         assertEquals(url, returned);
+    }
+
+    public void testGetConnectivityService_returnsConnectivityService_whenCalled(){
+        HTTPConnectionHandler connectionHandler = new HTTPConnectionHandler(context);
+        when(context.getSystemService(Context.CONNECTIVITY_SERVICE)).thenReturn(connectivityManager);
+
+        ConnectivityManager conn = connectionHandler.getConnectivityService();
+        assertNotNull(conn);
     }
 }

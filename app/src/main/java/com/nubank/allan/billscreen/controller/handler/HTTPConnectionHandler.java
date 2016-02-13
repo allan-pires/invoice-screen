@@ -31,7 +31,7 @@ public class HTTPConnectionHandler {
 
     // Checks if the device has connection with internet
     public boolean isConnectedToInternet() {
-        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivity = getConnectivityService();
         if (connectivity != null) {
             NetworkInfo[] info = connectivity.getAllNetworkInfo();
             if (info != null)
@@ -100,5 +100,9 @@ public class HTTPConnectionHandler {
 
     public URL createURL() throws MalformedURLException {
         return new URL(REST_URL);
+    }
+
+    public ConnectivityManager getConnectivityService(){
+        return (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 }
