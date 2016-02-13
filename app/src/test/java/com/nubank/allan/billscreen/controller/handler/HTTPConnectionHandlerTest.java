@@ -172,6 +172,8 @@ public class HTTPConnectionHandlerTest extends TestCase {
         when(netInfo.getState()).thenReturn(NetworkInfo.State.CONNECTED);
 
         Boolean connected = connectionHandler.isConnectedToInternet();
+        verify(connectionHandler, times(1)).getConnectivityService();
+        verify(connectivityManager, times(1)).getAllNetworkInfo();
         assertEquals(true, connected.booleanValue());
     }
 
@@ -186,6 +188,8 @@ public class HTTPConnectionHandlerTest extends TestCase {
         when(netInfo.getState()).thenReturn(NetworkInfo.State.DISCONNECTED);
 
         Boolean connected = connectionHandler.isConnectedToInternet();
+        verify(connectionHandler, times(1)).getConnectivityService();
+        verify(connectivityManager, times(1)).getAllNetworkInfo();
         assertEquals(false, connected.booleanValue());
     }
 

@@ -12,9 +12,15 @@ import junit.framework.TestCase;
 
 import org.mockito.Mockito;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.notNull;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by doisl_000 on 1/21/2016.
@@ -84,10 +90,15 @@ public class ExceptionHandlerTest extends TestCase {
     }
 
     public void testShowErrorActivity_showsErrorActivity_whenCalled(){
-        Mockito.when(context.getResources()).thenReturn(resources);
-        Mockito.doNothing().when(activity).startActivity(intent);
-        Mockito.doNothing().when(activity).finish();
+        ExceptionHandler ex = Mockito.mock(ExceptionHandler.class);
+        Mockito.doCallRealMethod().when(ex).showErrorActivity(any(Context.class), any(String.class));
+        Mockito.when(ex.getMessageFromCode(any(Context.class), any(String.class))).thenReturn("message");
+        Mockito.when(ex.createErrorIntent(any(Context.class), any(String.class))).thenReturn(intent);
+        Mockito.doNothing().when(context).startActivity(any(Intent.class));
 
         ex.showErrorActivity(context, "404");
+
+        verify(ex, times(1)).createErrorIntent(context, "404");
+        verify(context, times(1)).startActivity(any(Intent.class));
     }
 }

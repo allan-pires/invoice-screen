@@ -13,11 +13,7 @@ public class ExceptionHandler {
 
     // Shows ErrorActivity and display the corresponding error message
     public void showErrorActivity(Context context, String code){
-        String extra = getMessageFromCode(context, code);
-        Intent intent = new Intent(context, ErrorActivity.class);
-        intent.putExtra("error_code", code);
-        intent.putExtra("error_message", extra);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent intent = createErrorIntent(context, code);
         context.startActivity(intent);
     }
 
@@ -29,5 +25,15 @@ public class ExceptionHandler {
             case '5': return context.getResources().getString(R.string.err_5xx);
             default: return context.getResources().getString(R.string.err_default_message);
         }
+    }
+
+    public Intent createErrorIntent(Context context, String code){
+        String extra = getMessageFromCode(context, code);
+        Intent intent = new Intent(context, ErrorActivity.class);
+        intent.putExtra("error_code", code);
+        intent.putExtra("error_message", extra);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        return intent;
     }
 }
