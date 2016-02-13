@@ -22,4 +22,5 @@ Customers from a bank have to pay their bill monthly. The bill have four potenti
 - [HTTPConnectionHandler](https://github.com/doisLan/BillScreen/blob/master/app/src/main/java/com/nubank/allan/billscreen/controller/handler/HTTPConnectionHandler.java): Controller of connections to fetch data
 - [ExceptionHandler](https://github.com/doisLan/BillScreen/blob/master/app/src/main/java/com/nubank/allan/billscreen/controller/handler/ExceptionHandler.java): Controller of exceptions
 - [RESTTask](https://github.com/doisLan/BillScreen/blob/master/app/src/main/java/com/nubank/allan/billscreen/controller/task/RESTTask.java): Asynchronous task that consumes a REST API
-- [Test Files](https://github.com/doisLan/BillScreen/tree/master/app/src/androidTest/java/com/nubank/allan/billscreen): Unit and UI tests
+- [Unit Test](https://github.com/doisLan/BillScreen/tree/master/app/src/test/java/com/nubank/allan/billscreen): Unit Test Files
+- [Instrumental Test](https://github.com/doisLan/BillScreen/tree/master/app/src/androidTest/java/com/nubank/allan/billscreen): UI and Task test files
