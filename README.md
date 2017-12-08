@@ -1,5 +1,5 @@
 # InvoiceScreen
-![alt tag](http://i.imgur.com/XDA56Nu.png)
+![alt tag](https://i.imgur.com/Ww9V5in.png)
 
 ## Description
 This app is a implementation of an Invoice Screen. Developed with Android Studio + Gradle + JUnit + Mockito
